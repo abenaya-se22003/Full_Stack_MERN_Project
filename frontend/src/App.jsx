@@ -1,8 +1,18 @@
 import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+
 
 function App() {
   return (
-    <div>App</div>
+    <BrowserRouter>
+        <Routes>
+
+          <Route>{/* User Layout */}  </Route>
+          <Route>{/* Admin Layout */}  </Route>
+
+
+        </Routes>
+    </BrowserRouter>
   )
 }
 

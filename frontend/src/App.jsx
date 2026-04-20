@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import UserLayout from './components/Layout/UserLayout'
 
 
 function App() {
@@ -7,9 +8,8 @@ function App() {
     <BrowserRouter>
         <Routes>
 
-          <Route>{/* User Layout */}  </Route>
-          <Route>{/* Admin Layout */}  </Route>
-
+          <Route path="/" element={<UserLayout />} />
+          {/* <Route path="/admin" element={<AdminLayout />} /> */}
 
         </Routes>
     </BrowserRouter>

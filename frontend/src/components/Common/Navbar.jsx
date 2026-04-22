@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Ensure this is imported
 import { HiOutlineUser, HiOutlineShoppingBag, HiBars3BottomRight } from 'react-icons/hi2';
+import SearchBar from './SearchBar';
 
 function Navbar() {
   return (
@@ -44,6 +45,8 @@ function Navbar() {
               4
             </span>
           </button>
+
+          <SearchBar />
 
           {/* Mobile Menu Icon (Hidden on medium screens and up) */}
           <button className="md:hidden">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoMdClose } from "react-icons/io";
+import CartContents from '../Cart/CartContents';
 
 const CartDrawer = ({ isCartOpen, toggleCartDrawer }) => {
   return (
@@ -26,7 +27,9 @@ const CartDrawer = ({ isCartOpen, toggleCartDrawer }) => {
           
           {/* Placeholder for actual cart items */}
           <div className="text-gray-500 text-center mt-10">
-            Your cart is empty.
+           
+            {/* Component cart context */}
+            <CartContents />
           </div>
         </div>
 

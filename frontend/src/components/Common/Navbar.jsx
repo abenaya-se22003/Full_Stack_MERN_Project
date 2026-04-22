@@ -45,9 +45,9 @@ function Navbar() {
               4
             </span>
           </button>
-
+          <div className='overflow-hidden'>
           <SearchBar />
-
+             </div>
           {/* Mobile Menu Icon (Hidden on medium screens and up) */}
           <button className="md:hidden">
             <HiBars3BottomRight className="h-6 w-6 text-gray-700" />

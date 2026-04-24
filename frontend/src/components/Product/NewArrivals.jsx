@@ -16,6 +16,9 @@ const NewArrivals = () => {
     { _id: "3", name: "V-Neck Wrap Top", price: 50, images: [{ url: "https://picsum.photos/500/500?random=3" }] },
     { _id: "4", name: "Classic Polo", price: 70, images: [{ url: "https://picsum.photos/500/500?random=4" }] },
     { _id: "5", name: "Summer Dress", price: 85, images: [{ url: "https://picsum.photos/500/500?random=5" }] },
+    { _id: "6", name: "Denim Jacket", price: 120, images: [{ url: "https://picsum.photos/500/500?random=6" }] },
+    { _id: "7", name: "Maxi Skirt", price: 90, images: [{ url: "https://picsum.photos/500/500?random=7" }] },
+    { _id: "8", name: "Crop Top", price: 40, images: [{ url: "https://picsum.photos/500/500?random=8" }] }
   ];
 
   const scroll = (direction) => {

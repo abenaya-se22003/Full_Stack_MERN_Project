@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoMdClose } from "react-icons/io";
+import CartContests from '../Cart/CartContents';
 
 const CartDrawer = ({ isCartOpen, toggleCartDrawer }) => {
   return (
@@ -23,10 +24,7 @@ const CartDrawer = ({ isCartOpen, toggleCartDrawer }) => {
           <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
           
           {/* CartContents component or items go here */}
-          <div className="space-y-4">
-             {/* Example of where items would be listed */}
-             <p className="text-gray-500 text-center mt-10">CartContents</p>
-          </div>
+           <CartContests />
         </div>
 
         {/* 3. Checkout button fixed at the bottom */}

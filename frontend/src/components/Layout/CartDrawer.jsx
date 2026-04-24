@@ -4,22 +4,40 @@ import { IoMdClose } from "react-icons/io";
 const CartDrawer = ({ isCartOpen, toggleCartDrawer }) => {
   return (
     <>
-      {/* <-- I REMOVED THE BACKGROUND OVERLAY DIV FROM HERE --> 
-      */}
-
-      {/* Cart Drawer Panel - Everything else stays the same */}
-      <div className={`fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-xl z-50 transition-transform duration-300 transform ${isCartOpen ? "translate-x-0" : "translate-x-full"} flex flex-col`}>
+      {/* Cart Drawer Panel */}
+      <div 
+        className={`fixed top-0 right-0 w-full sm:w-[400px] h-full bg-white shadow-xl z-50 transition-transform duration-300 transform ${
+          isCartOpen ? "translate-x-0" : "translate-x-full"
+        } flex flex-col`}
+      >
         
-        {/* Close Button Header */}
+        {/* 1. Close Button Header */}
         <div className="flex justify-end p-4">
           <button onClick={toggleCartDrawer}>
             <IoMdClose className="h-6 w-6 text-gray-600" />
           </button>
         </div>
 
-        {/* ... Rest of your CartDrawer content goes here ... */}
-        {/* Cart contents */}
-        {/* Checkout button */}
+        {/* 2. Cart contents with scrollable area */}
+        <div className="flex-grow p-4 overflow-y-auto">
+          <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
+          
+          {/* CartContents component or items go here */}
+          <div className="space-y-4">
+             {/* Example of where items would be listed */}
+             <p className="text-gray-500 text-center mt-10">CartContents</p>
+          </div>
+        </div>
+
+        {/* 3. Checkout button fixed at the bottom */}
+        <div className="p-4 bg-white sticky bottom-0 border-t">
+          <button className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition">
+            Checkout
+          </button>
+          <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">
+            Shipping, taxes, and discount codes calculated at checkout.
+          </p>
+        </div>
 
       </div>
     </>

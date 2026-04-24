@@ -15,6 +15,7 @@ function Navbar() {
 
   return (
     <>
+    <header className="border-b border-gray-200">
       <nav className="container mx-auto flex items-center justify-between py-4 px-4">
         {/* Left-Logo */}
         <div>
@@ -72,6 +73,7 @@ function Navbar() {
           </nav>
         </div>
       </div>
+    </header>
 
      
 

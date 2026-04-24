@@ -1,9 +1,16 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { TbBrandMeta } from 'react-icons/tb';
+import { IoLogoInstagram } from 'react-icons/io5';
+import { RiTwitterXLine } from 'react-icons/ri';
+import { FiPhoneCall } from 'react-icons/fi';
 
-function Footer() {
+const Footer = () => {
   return (
-    <div>Footer</div>
-  )
-}
+    <footer className="border-t py-12">
+     
+           </footer>
+  );
+};
 
-export default Footer
+export default Footer;

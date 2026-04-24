@@ -73,13 +73,7 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Overlay for Mobile Nav (Click outside to close) */}
-      {navDrawerOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-20 z-40" 
-          onClick={toggleNavDrawer}
-        ></div>
-      )}
+     
 
       {/* Cart Drawer Component */}
       <CartDrawer isCartOpen={drawerOpen} toggleCartDrawer={toggleDrawer} /> 

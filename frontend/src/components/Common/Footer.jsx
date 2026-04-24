@@ -56,8 +56,31 @@ const Footer = () => {
           </ul>
         </div>
 
+          {/* Follow Us & Contact */}
+        <div>
+          <h3 className="text-lg text-gray-800 mb-4">Follow Us</h3>
+          <div className="flex items-center space-x-4 mb-6">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-500 text-gray-800">
+              <TbBrandMeta className="h-5 w-5" />
+            </a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-500 text-gray-800">
+              <IoLogoInstagram className="h-5 w-5" />
+            </a>
+            <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-500 text-gray-800">
+              <RiTwitterXLine className="h-4 w-4" />
+            </a>
+          </div>
+          
+          <p className="text-gray-500 text-sm mb-2">Call Us</p>
+          <p className="flex items-center text-gray-800 font-medium">
+            <FiPhoneCall className="inline-block mr-2" />
+            0123-456-789
+          </p>
+        </div>
+        </div>
 
-     </div>
+
+        
            </footer>
   );
 };

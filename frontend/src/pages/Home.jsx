@@ -3,6 +3,7 @@ import Hero from '../components/Layout/Hero'
 import GenderCollectionSection from '../components/Product/GenderCollectionSection'
 import NewArrivals from '../components/Product/NewArrivals'
 import ProductDetails from '../components/Product/ProductDetails'
+import ProductGrid from '../components/Product/ProductGrid'
 
 const placeholderProducts = [
   { _id: "1", name: "Product 1", price: 100, images: [{ url: "https://picsum.photos/500/500?random=11" }] },
@@ -29,8 +30,11 @@ function Home() {
 
       <ProductDetails />
         
-     <h2 className='text-3xl text-center font-bold mb-4'>Top wear for women</h2>
-
+    <div className='container mx-auto'>
+      <h2 className='text-3xl text-center font-bold mb-4'>Top wear for Women</h2>
+      <ProductGrid products={placeholderProducts} />
+    </div>
+       
     </div>
   )
 }

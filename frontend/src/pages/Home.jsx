@@ -2,6 +2,7 @@ import React from 'react'
 import Hero from '../components/Layout/Hero'
 import GenderCollectionSection from '../components/Product/GenderCollectionSection'
 import NewArrivals from '../components/Product/NewArrivals'
+import ProductDetails from '../components/Product/ProductDetails'
 
 function Home() {
   return (
@@ -9,6 +10,7 @@ function Home() {
       <Hero />
       <GenderCollectionSection  />
       <NewArrivals />
+      <ProductDetails />
     </div>
   )
 }

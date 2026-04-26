@@ -4,6 +4,7 @@ import GenderCollectionSection from '../components/Product/GenderCollectionSecti
 import NewArrivals from '../components/Product/NewArrivals'
 import ProductDetails from '../components/Product/ProductDetails'
 import ProductGrid from '../components/Product/ProductGrid'
+import FeaturedCollection from '../components/Product/FeaturedCollection'
 
 const placeholderProducts = [
   { _id: "1", name: "Product 1", price: 100, images: [{ url: "https://picsum.photos/500/500?random=11" }] },
@@ -36,6 +37,8 @@ function Home() {
       <h2 className='text-3xl text-center font-bold mb-4'>Top wear for Women</h2>
       <ProductGrid products={placeholderProducts} />
     </div>
+
+    <FeaturedCollection />
        
     </div>
   )

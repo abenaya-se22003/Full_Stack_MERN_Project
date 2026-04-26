@@ -5,6 +5,7 @@ import NewArrivals from '../components/Product/NewArrivals'
 import ProductDetails from '../components/Product/ProductDetails'
 import ProductGrid from '../components/Product/ProductGrid'
 import FeaturedCollection from '../components/Product/FeaturedCollection'
+import FeaturesSection from '../components/Product/FeaturesSection'
 
 const placeholderProducts = [
   { _id: "1", name: "Product 1", price: 100, images: [{ url: "https://picsum.photos/500/500?random=11" }] },
@@ -39,6 +40,7 @@ function Home() {
     </div>
 
     <FeaturedCollection />
+    <FeaturesSection />
        
     </div>
   )

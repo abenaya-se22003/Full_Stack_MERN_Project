@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const selectedProduct = {
   name: "Stylish Jacket",
@@ -26,12 +27,32 @@ const ProductDetails = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 1. Added missing state
 
   useEffect(() => {
     if (selectedProduct.images.length > 0) {
       setMainImage(selectedProduct.images[0].url);
     }
   }, []);
+
+  // 2. Fixed syntax: properly closed this function
+  const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) {
+      toast.error("Please select a size and color before adding to cart.", {
+        duration: 1000,
+      });
+      return;
+    }
+
+    setIsButtonDisabled(true);
+
+    setTimeout(() => {
+      toast.success("Product added to cart!", {
+        duration: 1000,
+      });
+      setIsButtonDisabled(false);
+    }, 500);
+  };
 
   return (
     <div className="p-6">
@@ -147,8 +168,15 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <button className="w-full bg-black text-white py-3 rounded-md font-bold uppercase hover:bg-gray-800 transition mb-10">
-              Add to Cart
+            {/* 3. Updated Button Logic */}
+            <button 
+              onClick={handleAddToCart} 
+              disabled={isButtonDisabled}
+              className={`w-full bg-black text-white py-3 rounded-md font-bold uppercase hover:bg-gray-800 transition mb-10 ${
+                isButtonDisabled ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {isButtonDisabled ? "Adding..." : "Add to Cart"}
             </button>
 
             {/* Characteristics Table */}

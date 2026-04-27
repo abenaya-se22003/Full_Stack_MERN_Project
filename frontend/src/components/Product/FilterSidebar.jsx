@@ -9,6 +9,8 @@ const FilterSidebar = () => {
   const genders = ["Men", "Women"];
   const colors = ["Red", "Blue", "Black", "Green", "Yellow", "Gray", "White", "Pink", "Beige", "Navy"];
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+  const materials = ["Cotton", "Wool", "Denim", "Polyester", "Silk", "Linen", "Viscose", "Fleece"];
+  const brands = ["Urban Threads", "Modern Fit", "Street Style", "Beach Breeze", "Fashionista", "ChicStyle"];
 
   const handleFilterChange = (key, value) => {
     const params = new URLSearchParams(searchParams);
@@ -74,6 +76,38 @@ const FilterSidebar = () => {
           <div key={size} className="flex items-center mb-1">
             <input type="checkbox" className="mr-2" onChange={() => {}} />
             <span className="text-gray-700 text-sm">{size}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Material Checkboxes */}
+      <div className="mb-6">
+        <label className="block text-gray-600 font-medium mb-2">Material</label>
+        {materials.map((material) => (
+          <div key={material} className="flex items-center mb-1">
+            <input
+              type="checkbox"
+              className="mr-2 h-4 w-4 text-blue-500"
+              value={material}
+              onChange={(e) => handleFilterChange("material", e.target.checked ? material : "")}
+            />
+            <span className="text-gray-700 text-sm">{material}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Brand Checkboxes */}
+      <div className="mb-6">
+        <label className="block text-gray-600 font-medium mb-2">Brand</label>
+        {brands.map((brand) => (
+          <div key={brand} className="flex items-center mb-1">
+            <input
+              type="checkbox"
+              className="mr-2 h-4 w-4 text-blue-500"
+              value={brand}
+              onChange={(e) => handleFilterChange("brand", e.target.checked ? brand : "")}
+            />
+            <span className="text-gray-700 text-sm">{brand}</span>
           </div>
         ))}
       </div>

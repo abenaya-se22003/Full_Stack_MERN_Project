@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import loginImg from "../assets/login.webp"; // Fixed: Removed curly braces for default import
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,7 +9,6 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic for login would go here
     toast.success("Logging in...");
   };
 
@@ -16,8 +16,7 @@ const Login = () => {
     <div className="flex">
       {/* LEFT SIDE: Login Form Container */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12 h-screen">
-        
-        <form 
+        <form
           onSubmit={handleSubmit}
           className="w-full max-w-md bg-white p-8 rounded-lg border shadow-sm"
         >
@@ -27,9 +26,7 @@ const Login = () => {
           </div>
 
           {/* Header */}
-          <h2 className="text-2xl font-bold text-center mb-6">
-            Hey there! 👋
-          </h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Hey there! 👋</h2>
           <p className="text-center text-gray-600 mb-6">
             Enter your username and password to Login.
           </p>
@@ -76,9 +73,15 @@ const Login = () => {
         </form>
       </div>
 
-      {/* RIGHT SIDE: Blank / Empty Space */}
-      <div className="hidden md:block w-1/2">
-        {/* This side is intentionally left empty */}
+      {/* RIGHT SIDE: Image Container */}
+      <div className="hidden md:block w-1/2 bg-gray-800">
+        <div className="h-full flex flex-col justify-center items-center">
+          <img
+            src={loginImg}
+            alt="Login to Account"
+            className="h-[750px] w-full object-cover"
+          />
+        </div>
       </div>
     </div>
   );

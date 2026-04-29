@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { FaBars, FaBoxOpen, FaClipboardList, FaUser, FaStore } from "react-icons/fa";
-import { Link, Outlet } from "react-router-dom";
+import { FaBars } from "react-icons/fa";
+import { Outlet } from "react-router-dom";
+import AdminSidebar from "./AdminSidebar";
 
 const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -20,11 +21,15 @@ const AdminLayout = () => {
       </div>
 
       {/* --- Sidebar --- */}
-     
+      <div
+        className={`bg-gray-900 w-64 min-h-screen text-white absolute md:relative transform transition-transform duration-300 z-20 
+        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+      >
+        <AdminSidebar />
+      </div>
 
       {/* --- Main Content --- */}
       <div className="flex-grow p-6 overflow-y-auto bg-gray-50">
-        {/* The Outlet is where different admin pages (Products, Orders, etc.) will appear */}
         <Outlet />
       </div>
     </div>

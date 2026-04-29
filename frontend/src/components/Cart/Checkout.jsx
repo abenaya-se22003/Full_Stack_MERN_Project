@@ -51,7 +51,7 @@ const Checkout = () => {
   return (
     <PayPalScriptProvider
       options={{
-        "client-id": "AUvjyz5KXWsyTgCzsktlnyoda2P3svt3GrpPXPpd8MTq4MbcNEoEcbdr4Hdj9_VcroKE1h8c1BFNPPRt",
+        "client-id": import.meta.env.VITE_PayPalClientId,
         currency: "USD",
       }}
     >

@@ -38,7 +38,7 @@ function App() {
           </Route>
            <Route path="/admin" element={<AdminLayout />} >
              <Route index element={<AdminHomePage />} />
-             <Route path="/admin/users" element={<div>Admin Users</div>} />
+             <Route  path="users" element={<UserManagement />} />
            </Route>
         </Routes>
     </BrowserRouter>

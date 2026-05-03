@@ -7,6 +7,9 @@ const ProductManagement = () => {
     { _id: "123123", name: "Printed Resort Shirt", price: 29.99, sku: "PRNT-RES-004" },
     { _id: "123124", name: "Chino Pants", price: 55, sku: "BW-005" },
     { _id: "123125", name: "Cargo Pants", price: 50, sku: "BW-008" },
+    {_id: "123126", name: "Denim Jacket", price: 80, sku: "DJ-001" },
+    {_id: "123127", name: "Leather Boots", price: 120, sku: "LB-002" },
+    {_id: "123128", name: "Wool Sweater", price: 60, sku: "WS-003" },
   ];
 
   const handleDelete = (id) => {

@@ -5,20 +5,55 @@ const jwt = require('jsonwebtoken');
 const router = express.Router();
 
 // Register a new user @route POST /api/users/register
-// @desc Register a new user
-// @access Public
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
     try {
-        const user = new User({ name, email, password });
+        // 1. Check if the user already exists
+        let user = await User.findOne({ email });
+
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+
+        // 2. Create and save the new user
+        user = new User({ name, email, password });
         await user.save();
-        res.status(201).json({ message: "User registered successfully" });
+
+        // 3. Create JWT token
+        const payload = {
+            user: {
+                id: user._id,
+                role: user.role
+            }
+        };
+
+        jwt.sign(
+            payload, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '1h' }, 
+            (err, token) => {
+                if (err) throw err;
+
+                // 4. Send token AND user details in a single JSON response
+                res.status(201).json({
+                    user: {
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                    },
+                    token,
+                });
+            }
+        );
+       
     } catch (error) {
         console.error("Error registering user:", error);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).send("Server Error");
     }
 });
+
 
 
 module.exports = router;

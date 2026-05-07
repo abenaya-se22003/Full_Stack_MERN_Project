@@ -107,6 +107,108 @@ router.delete('/:id', protect, admin, async (req, res) => {
     }
 });
 
+// @route GET /api/products
+// @desc Get all products with optional query filters
+// @access Public
+router.get("/", async (req, res) => {
+  try {
+    const {
+      collection,
+      size,
+      color,
+      gender,
+      minPrice,
+      maxPrice,
+      sortBy,
+      search,
+      category,
+      material,
+      brand,
+      limit,
+    } = req.query;
 
+    let query = {};
+    let sort = {};
+
+    // --- Filter Logic ---
+
+    // Collection Filter
+    if (collection && collection.toLocaleLowerCase() !== "all") {
+      query.collections = collection;
+    }
+
+    // Category Filter
+    if (category && category.toLocaleLowerCase() !== "all") {
+      query.category = category;
+    }
+
+    // Material Filter (Comma separated)
+    if (material) {
+      query.material = { $in: material.split(",") };
+    }
+
+    // Brand Filter
+    if (brand) {
+      query.brand = { $in: brand.split(",") };
+    }
+
+    // Size Filter
+    if (size) {
+      query.sizes = { $in: size.split(",") };
+    }
+
+    // Color Filter
+    if (color) {
+      query.colors = { $in: [color] };
+    }
+
+    // Gender Filter
+    if (gender) {
+      query.gender = gender;
+    }
+
+    // Price Range Filter
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // Search Logic (Name or Description)
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // --- Sort Logic ---
+    if (sortBy) {
+      switch (sortBy) {
+        case "priceAsc":
+          sort = { price: 1 };
+          break;
+        case "priceDesc":
+          sort = { price: -1 };
+          break;
+        case "popularity":
+          sort = { rating: -1 };
+          break;
+        default:
+          sort = { createdAt: -1 }; // Newest first
+      }
+    }
+
+    // --- Fetch Products ---
+    let products = await Product.find(query)
+      .sort(sort)
+      .limit(Number(limit) || 0);
+
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
 
 module.exports = router;

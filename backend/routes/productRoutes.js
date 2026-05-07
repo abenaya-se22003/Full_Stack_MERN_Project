@@ -211,6 +211,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+// @route GET /api/products/new-arrivals
+// @desc Retrieve latest 8 products - Creation date
+// @access Public
+router.get("/new-arrivals", async (req, res) => {
+  try {
+    // Fetch latest 8 products using sort and limit
+    const newArrivals = await Product.find()
+      .sort({ createdAt: -1 }) 
+      .limit(8);              
+
+    res.json(newArrivals);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+});
+
 
 // @route GET /api/products/:id
 // @desc Get a single product by ID
@@ -257,5 +274,7 @@ router.get("/similar/:id", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+
 
 module.exports = router;

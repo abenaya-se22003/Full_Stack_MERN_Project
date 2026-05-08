@@ -2,6 +2,7 @@ const express = require('express');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const router = express.Router();
+const protect = require('../middleware/authMiddleware');
 
 // Helper function to get or create a cart
 const getCart = async (userId, guestId) => {
@@ -152,6 +153,24 @@ router.delete("/", async (req, res) => {
             return res.status(200).json(cart);
         } else {
             return res.status(404).json({ message: "Product not found in cart" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error" });
+    }
+});
+
+ // @route GET /api/cart
+// @desc Get the cart for a guest or logged-in user
+// @access Public   
+router.get("/", async (req, res) => {
+    const { guestId, userId } = req.query;
+    try {
+        const cart = await getCart(userId, guestId);
+        if(cart) {
+            return res.status(200).json(cart);
+        } else {
+            return res.status(404).json({ message: "Cart not found" });
         }
     } catch (error) {
         console.error(error);

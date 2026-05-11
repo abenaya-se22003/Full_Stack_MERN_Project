@@ -178,4 +178,66 @@ router.get("/", async (req, res) => {
     }
 });
 
+// @riute POST /api/cart/merge
+// @desc Merge guest cart into user cart upon login
+// @access Public
+router.post("/merge", async (req, res) => {
+    const {guestId} = req.body;
+
+    try {
+        const guestCart = await Cart.findOne({ guestId });
+        const userCart = await Cart.findOne({ user: req.user._id });
+
+        if (!guestCart) {
+            return res.status(404).json({ message: "Guest cart not found" });
+        }
+
+        if (guestCart.products.length === 0) {
+            return res.status(200).json(userCart);
+        }
+
+        if (userCart) {
+            // Merge products from guest cart into user cart
+            guestCart.products.forEach((guestProduct) => {
+                const productIndex = userCart.products.findIndex(
+                    (item) =>
+                        item.productId.toString() === guestProduct.productId.toString() &&
+                        item.size === guestProduct.size &&
+                        item.color === guestProduct.color
+                );
+                if (productIndex > -1) {
+                    // Update quantity if product exists in user cart
+                    userCart.products[productIndex].quantity += guestProduct.quantity;
+                } else {
+                    // Add new product to user cart
+                    userCart.products.push(guestProduct);
+                }
+            });
+
+            userCart.totalPrice = userCart.products.reduce(
+                (acc, item) => acc + item.price * item.quantity,
+                0
+            );
+            await userCart.save();
+
+            try {
+                await Cart.findOneAndDelete({ guestId });
+            } catch (error) {
+                console.error("Error deleting guest cart:", error);
+            }
+
+            return res.status(200).json(userCart);
+        } else {
+            // If user cart doesn't exist, create a new one with guest cart products
+            guestCart.user = req.user._id;
+            guestCart.guestId = undefined;
+            await guestCart.save();
+            return res.status(200).json(guestCart);
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server Error" });
+    }
+});
+
 module.exports = router;

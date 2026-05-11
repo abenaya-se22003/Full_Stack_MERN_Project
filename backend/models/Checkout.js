@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const checkoutSchema = new mongoose.Schema({
+const checkoutItemSchema = new mongoose.Schema({
 
 
     productId: {
@@ -20,6 +20,19 @@ const checkoutSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    // size: {
+    //     type: String,
+    //     required: true      
+    // },
+    // color: {
+    //     type: String,
+    //     required: true
+    // },
+    // quantity: {
+    //     type: Number,
+    //     required: true,
+    //     min: 1
+    // }
 }, {
     _id: false
 });
@@ -30,7 +43,7 @@ const checkoutSchema= new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    checkoutItems :{[checkoutItemSchema]},
+    checkoutItems :[checkoutItemSchema],
     shippingAddress: {
         address: { type: String, required: true },
         city: { type: String, required: true },

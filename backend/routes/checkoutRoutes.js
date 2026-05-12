@@ -41,6 +41,36 @@ router.post("/", protect, async (req, res) => {
   }
 });
 
+// @route PUT /api/checkout/:id/pay
+// @desc Update checkout to mark as paid after successful payment
+// @access Private
+router.put("/:id/pay", protect, async (req, res) => {
+    const { paymentStatus, paymentDetails } = req.body;
 
+    try {
+        const checkout = await Checkout.findById(req.params.id);
+
+        if (!checkout) {
+            return res.status(404).json({ message: "Checkout not found" });
+        }
+
+        if (paymentStatus === "paid") {
+            // update checkout to mark as paid
+            checkout.isPaid = true;
+            checkout.paymentStatus = paymentStatus;
+            checkout.paymentDetails = paymentDetails;
+            checkout.paidAt = Date.now();
+
+            const updatedCheckout = await checkout.save();
+
+            res.status(200).json(updatedCheckout);
+        } else {
+            res.status(400).json({ message: "Invalid Payment Status" });
+        }
+    } catch (error) {
+        console.error("Payment Update Error:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
 
 module.exports = router;

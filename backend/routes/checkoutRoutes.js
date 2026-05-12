@@ -73,4 +73,53 @@ router.put("/:id/pay", protect, async (req, res) => {
     }
 });
 
+// @route POST /api/checkout/:id/finalize
+// @desc Finalize checkout and convert to an order after payment confirmation
+// @access Private
+router.post("/:id/finalize", protect, async (req, res) => {
+    try {
+        const checkout = await Checkout.findById(req.params.id);
+
+        if (!checkout) {
+            return res.status(404).json({ message: "Checkout not found" });
+        }
+
+        // 1. check if the checkout is paid and not already finalized
+        if (checkout.isPaid && !checkout.isFinalized) {
+            
+            // 2. create a new order based on the checkout details
+            const finalOrder = await Order.create({
+                user: checkout.user,
+                orderItems: checkout.checkoutItems, // Schema එක අනුව නිවැරදි field එක යොදන්න
+                shippingAddress: checkout.shippingAddress,
+                paymentMethod: checkout.paymentMethod,
+                totalPrice: checkout.totalPrice,
+                isPaid: true,
+                paidAt: checkout.paidAt,
+                isDelivered: false,
+                paymentStatus: "paid",
+                paymentDetails: checkout.paymentDetails,
+            });
+
+            // 3. mark the checkout as finalized to prevent duplicate orders
+            checkout.isFinalized = true;
+            checkout.finalizedAt = Date.now();
+            await checkout.save();
+
+            // 4. want to clear the cart after finalizing the order
+            await Cart.findOneAndDelete({ user: checkout.user });
+
+            res.status(201).json(finalOrder);
+
+        } else if (checkout.isFinalized) {
+            res.status(400).json({ message: "Checkout already finalized" });
+        } else {
+            res.status(400).json({ message: "Checkout is not paid" });
+        }
+    } catch (error) {
+        console.error("Finalize Error:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 module.exports = router;

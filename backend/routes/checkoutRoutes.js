@@ -90,7 +90,7 @@ router.post("/:id/finalize", protect, async (req, res) => {
             // 2. create a new order based on the checkout details
             const finalOrder = await Order.create({
                 user: checkout.user,
-                orderItems: checkout.checkoutItems, // Schema එක අනුව නිවැරදි field එක යොදන්න
+                orderItems: checkout.checkoutItems, 
                 shippingAddress: checkout.shippingAddress,
                 paymentMethod: checkout.paymentMethod,
                 totalPrice: checkout.totalPrice,

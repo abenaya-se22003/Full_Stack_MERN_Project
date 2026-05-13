@@ -51,5 +51,29 @@ router.put("/:id", protect, admin, async (req, res) => {
     }
 });
 
+// @route DELETE /api/admin/orders/:id
+// @desc Delete an order
+// @access Private/Admin
+router.delete("/:id", protect, admin, async (req, res) => {
+    try {
+        // 1. \given the order ID from the request parameters, find the order in the database
+        const order = await Order.findById(req.params.id);
+
+        if (order) {
+            // 2. given the order exists, delete it from the database
+            await order.deleteOne();
+            res.json({ message: "Order removed" });
+        } else {
+            // 3. given the order is not found, return a 404 error
+            res.status(404).json({ message: "Order not found" });
+        }
+    } catch (error) {
+        console.error("Order Delete Error:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+
+
 
 module.exports = router;

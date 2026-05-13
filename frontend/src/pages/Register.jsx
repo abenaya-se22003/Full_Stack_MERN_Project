@@ -2,14 +2,19 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import registerImg from "../assets/register.webp"; // Using a unique image for register
+import { registerUser } from "../redux/slices/authSlice"; 
+import { useDispatch } from "react-redux";
+
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(registerUser({ name, email, password }));
     toast.success("Account created successfully!");
     console.log("Register Info:", { name, email, password });
   };

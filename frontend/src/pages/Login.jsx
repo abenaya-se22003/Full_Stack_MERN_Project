@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import loginImg from "../assets/login.webp"; // Fixed: Removed curly braces for default import
+import {loginUser} from "../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(loginUser({ email, password }));
     toast.success("Logging in...");
   };
 

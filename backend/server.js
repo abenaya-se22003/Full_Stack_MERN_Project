@@ -11,6 +11,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const subscriberRoutes = require('./routes/subscriberRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productAdminRoutes = require('./routes/productAdminRoutes');  
+const adminOrderRoutes = require('./routes/adminOrderRoutes');  
 
 
 const app = exoress();
@@ -39,7 +40,7 @@ app.use('/api/subscribers', subscriberRoutes);
 // Admin routes
 app.use('/api/admin/users', adminRoutes);
 app.use('/api/admin/products', productAdminRoutes);
-
+app.use('/api/admin/orders', adminOrderRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

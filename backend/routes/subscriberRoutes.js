@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Subscriber = require("../models/Subscriber");
 
+
+const route = express.Router();
+
 // @route POST /api/subscribers
 // @desc Add a new subscriber
 // @access Public

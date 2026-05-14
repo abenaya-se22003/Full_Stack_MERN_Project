@@ -1,4 +1,4 @@
-import { createSlice,creatAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // 1. Add to Cart from local storage

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Hero from '../components/Layout/Hero'
 import GenderCollectionSection from '../components/Product/GenderCollectionSection'
 import NewArrivals from '../components/Product/NewArrivals'
@@ -6,42 +6,59 @@ import ProductDetails from '../components/Product/ProductDetails'
 import ProductGrid from '../components/Product/ProductGrid'
 import FeaturedCollection from '../components/Product/FeaturedCollection'
 import FeaturesSection from '../components/Product/FeaturesSection'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductsByFilters } from '../redux/slices/productSlice'
+import axios from 'axios'
 
-const placeholderProducts = [
-  { _id: "1", name: "Product 1", price: 100, images: [{ url: "https://picsum.photos/500/500?random=11" }] },
-  { _id: "2", name: "Product 2", price: 100, images: [{ url: "https://picsum.photos/500/500?random=12" }] },
-  { _id: "3", name: "Product 3", price: 100, images: [{ url: "https://picsum.photos/500/500?random=13" }] },
-  { _id: "4", name: "Product 4", price: 100, images: [{ url: "https://picsum.photos/500/500?random=14" }] },
-  { _id: "5", name: "Product 5", price: 100, images: [{ url: "https://picsum.photos/500/500?random=15" }] },
-  { _id: "6", name: "Product 6", price: 100, images: [{ url: "https://picsum.photos/500/500?random=16" }] },
-  { _id: "7", name: "Product 7", price: 100, images: [{ url: "https://picsum.photos/500/500?random=17" }] },
-  { _id: "8", name: "Product 8", price: 100, images: [{ url: "https://picsum.photos/500/500?random=18" }] },
-  { _id: "9", name: "Product 9", price: 100, images: [{ url: "https://picsum.photos/500/500?random=19" }] },
-  { _id: "10", name: "Product 10", price: 100, images: [{ url: "https://picsum.photos/500/500?random=20" }] },
-  { _id: "11", name: "Product 11", price: 100, images: [{ url: "https://picsum.photos/500/500?random=21" }] },
-  { _id: "12", name: "Product 12", price: 100, images: [{ url: "https://picsum.photos/500/500?random=22" }] },
 
-];
 
 function Home() {
+  const dispatch = useDispatch();
+  const {products, loading, error} = useSelector((state) => state.products);
+  const [bestSellers, setBestSellers] = useState([]);
+  const bestSellerProduct = bestSellers[0] || null;
+
+  useEffect(() => {
+    dispatch(
+      fetchProductsByFilters({
+        gender: "Women",
+        category: "Bottom Wear",
+        limit: 8,
+      })
+    );
+
+    const fetchBestSellers = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`);
+        setBestSellers(response.data);
+      } catch (error) {
+        console.error("Error fetching best sellers:", error);
+      }
+    };
+    fetchBestSellers();
+  }, [dispatch]);
+
   return (
     <div>
       <Hero />
-      <GenderCollectionSection  />
+      <GenderCollectionSection />
       <NewArrivals />
-     
-   <h2 className='text-3xl text-center font-bold mb-4'>Best Seller</h2>
 
-      <ProductDetails />
-        
-    <div className='container mx-auto'>
-      <h2 className='text-3xl text-center font-bold mb-4'>Top wear for Women</h2>
-      <ProductGrid products={placeholderProducts} />
-    </div>
+      <h2 className='text-3xl text-center font-bold mb-4'>Best Seller</h2>
+      {bestSellerProduct ? (
+        <ProductDetails productId={bestSellerProduct._id} />
+      ) : (
+        <p className='text-center text-gray-500'>No best sellers available at the moment.</p>
+      )}
 
-    <FeaturedCollection />
-    <FeaturesSection />
-       
+      <div className='container mx-auto'>
+        <h2 className='text-3xl text-center font-bold mb-4'>Top wear for Women</h2>
+        <ProductGrid products={products} loading={loading} error={error} />
+      </div>
+
+      <FeaturedCollection />
+      <FeaturesSection />
+
     </div>
   )
 }

@@ -229,23 +229,21 @@ router.get("/new-arrivals", async (req, res) => {
 });
 
 
-// @route GET /api/products/:id
-// @desc Get a single product by ID
+// @route GET /api/products/best-seller
+// @desc Retrieve top-selling / highest-rated products
 // @access Public
-router.get("/:id", async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id);  
-        if (!product) {
-            return res.status(404).json({ message: "Product not found" });
-        }
+router.get("/best-seller", async (req, res) => {
+  try {
+    const bestSellers = await Product.find()
+      .sort({ rating: -1, numReviews: -1 })
+      .limit(4);
 
-        res.json(product);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Server Error");
-    }
+    res.json(bestSellers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
 });
-
 
 // @route GET /api/products/similar/:id
 // @desc Get similar products based on gender and category
@@ -273,6 +271,24 @@ router.get("/similar/:id", async (req, res) => {
     console.error(error);
     res.status(500).send("Server Error");
   }
+});
+
+
+// @route GET /api/products/:id
+// @desc Get a single product by ID
+// @access Public
+router.get("/:id", async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);  
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.json(product);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
 });
 
 

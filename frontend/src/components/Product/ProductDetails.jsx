@@ -75,7 +75,7 @@ const ProductDetails = ({ productId }) => {
               {selectedProduct.images.map((image, index) => (
                 <img
                   key={index}
-                  src={image.url}
+                  src={image.url || null}
                   alt={image.altText || "Thumbnail"}
                   className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${mainImage === image.url ? "border-black" : "border-gray-200"}`}
                   onClick={() => setMainImage(image.url)}
@@ -86,11 +86,11 @@ const ProductDetails = ({ productId }) => {
             {/* MIDDLE: MAIN IMAGE */}
             <div className="md:w-1/2 mb-4">
               <div className="mb-4">
-                <img src={mainImage} alt="Main Product" className="w-full h-auto object-cover rounded-lg" />
+                <img src={mainImage || null} alt="Main Product" className="w-full h-auto object-cover rounded-lg" />
               </div>
               <div className="md:hidden flex space-x-4 mb-4">
                 {selectedProduct.images.map((image, index) => (
-                  <img key={index} src={image.url} alt="Mobile Thumbnail" className="w-20 h-20 object-cover rounded-lg border" onClick={() => setMainImage(image.url)} />
+                  <img key={index} src={image.url || null} alt="Mobile Thumbnail" className="w-20 h-20 object-cover rounded-lg border" onClick={() => setMainImage(image.url)} />
                 ))}
               </div>
             </div>

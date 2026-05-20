@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import { HiMagnifyingGlass, HiMiniXMark } from "react-icons/hi2";
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setFilters, fetchProductsByFilters } from '../../redux/slices/productSlice';
 
 const Search = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
- 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
 
   const handleSearchToggle = () => {
     setIsOpen(!isOpen);
     setSearchTerm(""); // Clear search when closing
   };
+
+  const handleSearch=(e) => {
+    e.preventDefault();
+    dispatch(setFilters({ search: searchTerm }));
+    dispatch(fetchProductsByFilters({ search: searchTerm }));
+    navigate("/collection/all?search=" + searchTerm);
+    setIsOpen(false)
+    handleSearchToggle();
+  }
 
   return (
     <div className="flex items-center">

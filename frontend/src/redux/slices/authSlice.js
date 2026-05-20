@@ -24,7 +24,7 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/user/login`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
         userData
       );
 

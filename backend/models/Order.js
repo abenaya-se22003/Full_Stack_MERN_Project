@@ -81,7 +81,7 @@ const orderSchema = new mongoose.Schema({
          default: 'pending'
     }
 }, {
-   timeseries: true
+   timestamps: true
 });
     
 module.exports = mongoose.model('Order', orderSchema);

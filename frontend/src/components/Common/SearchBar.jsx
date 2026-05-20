@@ -4,6 +4,8 @@ import { HiMagnifyingGlass, HiMiniXMark } from "react-icons/hi2";
 const Search = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+ 
+
 
   const handleSearchToggle = () => {
     setIsOpen(!isOpen);

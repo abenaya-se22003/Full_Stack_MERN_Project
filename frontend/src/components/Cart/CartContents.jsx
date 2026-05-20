@@ -1,26 +1,27 @@
 import React from 'react';
 import { RiDeleteBin3Line } from "react-icons/ri";
+import { useDispatch } from 'react-redux';
+import { updateCartItem, removeFromCart } from '../../redux/slices/cartSlice';
 
-const CartContents = () => {
-  // 1. Setup Mock Data (This acts as your API data)
-  const cartProducts = [
-    {
-      id: 1,
-      name: "T-shirt",
-      size: "M",
-      color: "Red",
-      price: 15,
-      image: "https://picsum.photos/200?random=1",
-    },
-    {
-      id: 2,
-      name: "Jeans",
-      size: "L",
-      color: "Blue",
-      price: 25,
-      image: "https://picsum.photos/200?random=2",
-    },
-  ];
+const CartContents = ({ cart, userId, guestId }) => {
+
+  const dispatch = useDispatch();
+
+  const handleAddToCart = (productId,delta,quantity,size,color) => {  
+    const newQuantity = quantity + delta;
+    if (newQuantity < 1) return; // Prevent quantity from going below 1
+
+    dispatch(updateCartItem({ userId, guestId, productId, quantity: newQuantity, size, color }));
+  };
+
+  const handleRemoveFromCart = (productId,size,color) => {
+    dispatch(removeFromCart({ userId, guestId, productId, size, color }));
+  };
+
+  const cartProducts = cart?.products || [];
+
+  
+ 
 
   return (
     <div>
@@ -40,9 +41,9 @@ const CartContents = () => {
               
               {/* Quantity Controller */}
               <div className="flex items-center mt-2 border rounded-md w-fit">
-                <button className="px-2 py-1 text-xl border-r hover:bg-gray-100">-</button>
-                <span className="px-4">1</span>
-                <button className="px-2 py-1 text-xl border-l hover:bg-gray-100">+</button>
+                <button onClick={()=>handleAddToCart(product.productId, -1, product.quantity, product.size, product.color)} className="px-2 py-1 text-xl border-r hover:bg-gray-100" >-</button>
+                <span className="px-4">{product.quantity}</span>
+                <button onClick={()=>handleAddToCart(product.productId, 1, product.quantity, product.size, product.color)} className="px-2 py-1 text-xl border-l hover:bg-gray-100">+</button>
               </div>
             </div>
           </div>
@@ -50,7 +51,7 @@ const CartContents = () => {
           {/* Right Side: Price and Delete */}
           <div className="flex flex-col items-end justify-between h-24">
             <p className="font-semibold">$ {product.price}</p>
-            <button className="text-red-500 hover:text-red-700">
+            <button onClick={() => handleRemoveFromCart(product.productId, product.size, product.color)} className="text-red-500 hover:text-red-700">
               <RiDeleteBin3Line className="h-5 w-5" />
             </button>
           </div>

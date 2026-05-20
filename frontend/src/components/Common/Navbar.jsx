@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { HiOutlineUser, HiOutlineShoppingBag, HiBars3BottomRight } from 'react-icons/hi2';
 import { IoMdClose } from "react-icons/io"; // Import Close Icon
@@ -12,6 +13,9 @@ function Navbar() {
 
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
   const toggleNavDrawer = () => setNavDrawerOpen(!navDrawerOpen);
+
+  const {cart} = useSelector((state) => state.cart);
+  const cartItemCount = cart?.products?.reduce((total, item) => total + item.quantity, 0) || 0;
 
   return (
     <>
@@ -39,7 +43,7 @@ function Navbar() {
 
           <button onClick={toggleDrawer} className="relative hover:text-black">
             <HiOutlineShoppingBag className="h-6 w-6 text-gray-700" />
-            <span className="absolute -top-1 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">4</span>
+            <span className="absolute -top-1 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">{cartItemCount}</span>
           </button>
 
           <div className='overflow-hidden'>

@@ -19,8 +19,8 @@ const SortOptions = () => {
         className="border p-2 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
       >
         <option value="">Default</option>
-        <option value="priceLowHigh">Price: Low to High</option>
-        <option value="priceHighLow">Price: High to Low</option>
+        <option value="priceAsc">Price: Low to High</option>
+        <option value="priceDesc">Price: High to Low</option>
         <option value="popularity">Popularity</option>
       </select>
     </div>

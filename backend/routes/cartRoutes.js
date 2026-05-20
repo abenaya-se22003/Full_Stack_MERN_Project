@@ -8,10 +8,19 @@ const { protect } = require('../middleware/authMiddleware');
 
 // Helper function to get or create a cart
 const getCart = async (userId, guestId) => {
-    if (userId) {
-        return await Cart.findOne({ user: userId });
-    } else if (guestId) {
-        return await Cart.findOne({ guestId });
+    const cleanUserId = (userId && userId !== "null" && userId !== "undefined") ? userId : null;
+    const cleanGuestId = (guestId && guestId !== "null" && guestId !== "undefined") ? guestId : null;
+
+    const query = [];
+    if (cleanUserId) {
+        query.push({ user: cleanUserId });
+    }
+    if (cleanGuestId) {
+        query.push({ guestId: cleanGuestId });
+    }
+
+    if (query.length > 0) {
+        return await Cart.findOne({ $or: query });
     }
     return null;
 };
@@ -58,9 +67,12 @@ router.post('/', async (req, res) => {
             await cart.save();
             return res.status(200).json(cart);
         } else {
+            const cleanUserId = (userId && userId !== "null" && userId !== "undefined") ? userId : null;
+            const cleanGuestId = (guestId && guestId !== "null" && guestId !== "undefined") ? guestId : null;
+
             const newCart = await Cart.create({
-                user: userId ? userId : undefined,
-                guestId: guestId ? guestId : "guest_" + new Date().getTime(),
+                user: cleanUserId ? cleanUserId : undefined,
+                guestId: cleanGuestId ? cleanGuestId : "guest_" + new Date().getTime(),
                 products: [{
                     productId,
                     name: product.name,

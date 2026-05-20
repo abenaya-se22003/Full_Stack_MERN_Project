@@ -1,5 +1,5 @@
 import React from "react";
-import MyOrdersPage from "./MyOdersPage";
+import MyOrdersPage from "./MyOrdersPage";
 import { useNavigate } from "react-router-dom";
 import{useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";

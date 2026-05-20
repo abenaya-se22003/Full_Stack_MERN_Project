@@ -112,7 +112,7 @@ const cartSlice = createSlice({
     },
     reducers: {
         clearCart: (state) => {
-            state.cart = {product:[]};
+            state.cart = { products: [] };
             localStorage.removeItem("cart");
         },
     },

@@ -22,10 +22,10 @@ router.get("/my-orders", protect, async (req, res) => {
   }
 });
 
-// @route POST /api/orders/:id
-// @desc Get prder deatils by ID
+// @route GET /api/orders/:id
+// @desc Get order details by ID
 // @access Private
-router.post("/:id", protect, async (req, res) => {
+router.get("/:id", protect, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate("user", "name email");
 

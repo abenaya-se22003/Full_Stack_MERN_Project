@@ -1,33 +1,37 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserOrders } from "../redux/slices/orderSlice";
 
 const MyOrdersPage = () => {
-  const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    // Simulate fetching orders
-    setTimeout(() => {
-      const mockOrders = [
-        {
-          _id: "34567",
-          createdAt: new Date(),
-          shippingAddress: { city: "New York", country: "USA" },
-          orderItems: [
-            { name: "Jacket", image: "https://picsum.photos/150?random=1", price: 120, quantity: 1 },
-          ],
-          totalPrice: 120,
-          isPaid: true,
-        },
-      ];
-      setOrders(mockOrders);
-    }, 1000);
-  }, []);
+    dispatch(fetchUserOrders());
+  }, [dispatch]);
 
   // Handle row click to go to details
   const handleRowClick = (orderId) => {
     navigate(`/order/${orderId}`);
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 text-center text-gray-500 py-20">
+        Loading your orders...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 text-center text-red-500 py-20">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
@@ -44,23 +48,43 @@ const MyOrdersPage = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
-              <tr
-                key={order._id}
-                onClick={() => handleRowClick(order._id)}
-                className="border-b hover:bg-gray-50 cursor-pointer"
-              >
-                <td className="py-2 px-4">
-                  <img src={order.orderItems[0].image} className="w-12 h-12 object-cover rounded-lg" alt="" />
-                </td>
-                <td className="py-2 px-4 font-medium text-gray-900">#{order._id}</td>
-                <td className="py-2 px-4">{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td className="py-2 px-4">${order.totalPrice}</td>
-                <td className="py-2 px-4">
-                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Paid</span>
+            {orders && orders.length > 0 ? (
+              orders.map((order) => (
+                <tr
+                  key={order._id}
+                  onClick={() => handleRowClick(order._id)}
+                  className="border-b hover:bg-gray-50 cursor-pointer"
+                >
+                  <td className="py-2 px-4">
+                    <img
+                      src={order.orderItems && order.orderItems[0] ? order.orderItems[0].image : ""}
+                      className="w-12 h-12 object-cover rounded-lg"
+                      alt={order.orderItems && order.orderItems[0] ? order.orderItems[0].name : "Product"}
+                    />
+                  </td>
+                  <td className="py-2 px-4 font-medium text-gray-900">#{order._id}</td>
+                  <td className="py-2 px-4">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="py-2 px-4">${order.totalPrice}</td>
+                  <td className="py-2 px-4">
+                    <span
+                      className={`${
+                        order.isPaid
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      } px-2 py-1 rounded-full text-xs font-medium`}
+                    >
+                      {order.isPaid ? "Paid" : "Pending"}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="py-10 text-center text-gray-400">
+                  You have no orders.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

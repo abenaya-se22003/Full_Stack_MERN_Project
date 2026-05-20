@@ -106,8 +106,16 @@ router.post("/:id/finalize", protect, async (req, res) => {
             checkout.finalizedAt = Date.now();
             await checkout.save();
 
-            // 4. want to clear the cart after finalizing the order
-            await Cart.findOneAndDelete({ user: checkout.user });
+            // 4. clear the cart after finalizing the order
+            const cart = await Cart.findOne({ user: checkout.user });
+            if (cart) {
+                cart.products = [];
+                cart.totalPrice = 0;
+                await cart.save();
+                console.log(`Cart cleared for user: ${checkout.user}`);
+            } else {
+                console.log(`No cart found to clear for user: ${checkout.user}`);
+            }
 
             res.status(201).json(finalOrder);
 

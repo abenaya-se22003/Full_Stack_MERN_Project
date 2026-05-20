@@ -24,7 +24,7 @@ const Register = () => {
     if (user) {
       if (cart?.products?.length > 0 && guestId) {
         // Merge guest cart with user cart
-        dispatch(mergeCart({ guestId, userId: user._id })).then(() => {
+        dispatch(mergeCart({ guestId, userId: user.id || user._id })).then(() => {
           navigate(isCheckoutRedirect ? "/checkout" : "/");
         });
       } else {

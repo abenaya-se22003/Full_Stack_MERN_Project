@@ -46,7 +46,7 @@ const ProductDetails = ({ productId }) => {
       size: selectedSize,
       color: selectedColor,
       quantity,
-      userId: user?._id,
+      userId: user?.id || user?._id,
       guestId,
     })).then(() => {
       toast.success("Product added to cart!", { duration: 1000 });

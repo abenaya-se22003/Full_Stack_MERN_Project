@@ -1,29 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrderDetails } from "../redux/slices/orderSlice";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
-  const [orderDetails, setOrderDetails] = useState(null);
+  const dispatch = useDispatch();
+  const{ orderDetails, loading, error } = useSelector((state) => state.orders);
 
   useEffect(() => {
-    // Simulate fetching details by ID
-    const mockOrderDetails = {
-      _id: id,
-      createdAt: new Date(),
-      isPaid: true,
-      isDelivered: false,
-      paymentMethod: "PayPal",
-      shippingMethod: "Standard",
-      shippingAddress: { city: "New York", country: "USA" },
-      orderItems: [
-        { _id: "p1", name: "Jacket", price: 120, quantity: 1, image: "https://picsum.photos/150?random=1" },
-        { _id: "p2", name: "Shirt", price: 150, quantity: 2, image: "https://picsum.photos/150?random=2" },
-      ],
-    };
-    setOrderDetails(mockOrderDetails);
-  }, [id]);
+    dispatch(fetchOrderDetails(id));
+  }, [dispatch, id]);
 
-  if (!orderDetails) return <p className="p-10">Loading...</p>;
+  if (loading) return <p className="p-10">Loading...</p>;
+  if (error) return <p className="p-10">Error: {error}</p>;
+  if (!orderDetails) return <p className="p-10">Order not found</p>;
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
@@ -37,8 +28,19 @@ const OrderDetailsPage = () => {
             <p className="text-gray-500">{new Date(orderDetails.createdAt).toLocaleDateString()}</p>
           </div>
           <div className="flex flex-col gap-2 mt-4 sm:mt-0 sm:text-right">
-            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium w-fit sm:ml-auto">Approved</span>
-            <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium w-fit sm:ml-auto">Pending Delivery</span>
+            <span className={`${
+              orderDetails.isPaid ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            } px-3 py-1 rounded-full text-sm font-medium w-fit sm:ml-auto`}>
+              {orderDetails.isPaid ? "Paid" : "Unpaid"}
+            </span>
+            <span className={`${
+              orderDetails.status === "delivered" ? "bg-green-100 text-green-800" :
+              orderDetails.status === "shipped" ? "bg-blue-100 text-blue-800" :
+              orderDetails.status === "processing" ? "bg-yellow-100 text-yellow-800" :
+              "bg-gray-100 text-gray-800"
+            } px-3 py-1 rounded-full text-sm font-medium w-fit sm:ml-auto capitalize`}>
+              {orderDetails.status}
+            </span>
           </div>
         </div>
 
@@ -51,8 +53,7 @@ const OrderDetailsPage = () => {
           </div>
           <div>
             <h4 className="font-bold mb-2">Shipping Info</h4>
-            <p className="text-gray-600">Method: {orderDetails.shippingMethod}</p>
-            <p className="text-gray-600">Address: {orderDetails.shippingAddress.city}, {orderDetails.shippingAddress.country}</p>
+            <p className="text-gray-600">Address: {orderDetails.shippingAddress.address}, {orderDetails.shippingAddress.city}, {orderDetails.shippingAddress.country}</p>
           </div>
         </div>
 
@@ -70,10 +71,10 @@ const OrderDetailsPage = () => {
             </thead>
             <tbody>
               {orderDetails.orderItems.map((item) => (
-                <tr key={item._id} className="border-b">
+                <tr key={item.productId || item._id} className="border-b">
                   <td className="py-4 px-4 flex items-center gap-4">
                     <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-lg" />
-                    <Link to={`/product/${item._id}`} className="text-blue-500 hover:underline">{item.name}</Link>
+                    <Link to={`/product/${item.productId || item._id}`} className="text-blue-500 hover:underline">{item.name}</Link>
                   </td>
                   <td className="py-4 px-4">${item.price}</td>
                   <td className="py-4 px-4 text-center">{item.quantity}</td>

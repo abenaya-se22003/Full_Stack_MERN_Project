@@ -9,7 +9,7 @@ const CartDrawer = ({ isCartOpen, toggleCartDrawer }) => {
      const navigate = useNavigate();
      const {user,guestId} = useSelector((state) => state.auth);
      const {cart} = useSelector((state) => state.cart);
-     const userId = user ? user._id : null; // Use guestId if user is not logged in
+     const userId = user ? (user.id || user._id) : null; // Use guestId if user is not logged in
       const handleCheckout = () => {
        
         if(!user){

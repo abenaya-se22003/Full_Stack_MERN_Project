@@ -7,6 +7,7 @@ import axios from "axios";
 
 // Action Imports
 import { createCheckout } from "../../redux/slices/checkoutSlice";
+import { clearCart } from "../../redux/slices/cartSlice";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -29,13 +30,15 @@ const Checkout = () => {
     phone: "",
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   // Redirect if cart is empty
   useEffect(() => {
+    if (paymentSuccess) return;
     if (!cart || !cart.products || cart.products.length === 0) {
       navigate("/");
     }
-  }, [cart, navigate]);
+  }, [cart, navigate, paymentSuccess]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -112,6 +115,10 @@ const Checkout = () => {
         totalPrice: cart.totalPrice,
         shippingAddress: shippingAddress,
       };
+
+      // Clear the cart on payment success
+      setPaymentSuccess(true);
+      dispatch(clearCart());
 
       navigate("/order-confirmation", { state: { order: orderData } });
     } catch (error) {

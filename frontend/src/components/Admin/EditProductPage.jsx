@@ -1,44 +1,124 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
+import { createProduct, updateProduct } from "../../redux/slices/adminProductSlice";
+import { fetchProductDetails } from "../../redux/slices/productSlice";
 
 const EditProductPage = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const isEditMode = Boolean(id);
+
   const [productData, setProductData] = useState({
     name: "",
     description: "",
     price: 0,
+    discountPrice: 0,
     countInStock: 0,
     sku: "",
     category: "",
     brand: "",
     sizes: [],
     colors: [],
-    collections: "",
+    collections: [],
     material: "",
-    gender: "",
-    images: [
-      { url: "https://picsum.photos/150?random=1" },
-      { url: "https://picsum.photos/150?random=2" },
-    ],
+    gender: "Unisex",
+    images: [],
   });
+
+  const [uploading, setUploading] = useState(false);
+
+  // Fetch product detail in edit mode
+  useEffect(() => {
+    if (isEditMode) {
+      const getProductDetails = async () => {
+        try {
+          const actionResult = await dispatch(fetchProductDetails(id)).unwrap();
+          setProductData({
+            name: actionResult.name || "",
+            description: actionResult.description || "",
+            price: actionResult.price || 0,
+            discountPrice: actionResult.discountPrice || 0,
+            countInStock: actionResult.countInStock || 0,
+            sku: actionResult.sku || "",
+            category: actionResult.category || "",
+            brand: actionResult.brand || "",
+            sizes: actionResult.sizes || [],
+            colors: actionResult.colors || [],
+            collections: actionResult.collections || [],
+            material: actionResult.material || "",
+            gender: actionResult.gender || "Unisex",
+            images: actionResult.images || [],
+          });
+        } catch (error) {
+          toast.error("Failed to fetch product details.");
+        }
+      };
+      getProductDetails();
+    }
+  }, [dispatch, id, isEditMode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData({ ...productData, [name]: value });
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    console.log(file);
-    // In a real app, you would upload to a cloud service and get a URL back
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    setUploading(true);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/upload/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setProductData((prevData) => ({
+        ...prevData,
+        images: [...prevData.images, { url: response.data.imageUrl, altText: file.name }],
+      }));
+      toast.success("Image uploaded successfully.");
+    } catch (error) {
+      console.error("Image upload failed:", error);
+      toast.error("Failed to upload image.");
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Updated Product Data:", productData);
+    try {
+      if (isEditMode) {
+        await dispatch(updateProduct({ id, productData })).unwrap();
+        toast.success("Product updated successfully.");
+      } else {
+        await dispatch(createProduct(productData)).unwrap();
+        toast.success("Product created successfully.");
+      }
+      navigate("/admin/products");
+    } catch (error) {
+      toast.error(error.message || "Failed to save product.");
+    }
   };
 
   return (
     <div className="max-w-5xl mx-auto p-6 shadow-md rounded-md bg-white">
-      <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
+      <h2 className="text-3xl font-bold mb-6">
+        {isEditMode ? "Edit Product" : "Create Product"}
+      </h2>
 
       <form onSubmit={handleSubmit}>
         {/* Product Name */}
@@ -67,7 +147,7 @@ const EditProductPage = () => {
           ></textarea>
         </div>
 
-        {/* Price & Stock */}
+        {/* Price & Discount Price */}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <label className="block font-semibold mb-2">Price</label>
@@ -77,8 +157,23 @@ const EditProductPage = () => {
               value={productData.price}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-md p-2"
+              required
             />
           </div>
+          <div>
+            <label className="block font-semibold mb-2">Discount Price</label>
+            <input
+              type="number"
+              name="discountPrice"
+              value={productData.discountPrice}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+            />
+          </div>
+        </div>
+
+        {/* Stock & SKU */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <label className="block font-semibold mb-2">Count in Stock</label>
             <input
@@ -87,20 +182,73 @@ const EditProductPage = () => {
               value={productData.countInStock}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-md p-2"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-2">SKU</label>
+            <input
+              type="text"
+              name="sku"
+              value={productData.sku}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+              required
             />
           </div>
         </div>
 
-        {/* SKU */}
-        <div className="mb-6">
-          <label className="block font-semibold mb-2">SKU</label>
-          <input
-            type="text"
-            name="sku"
-            value={productData.sku}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md p-2"
-          />
+        {/* Category & Brand */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block font-semibold mb-2">Category</label>
+            <input
+              type="text"
+              name="category"
+              value={productData.category}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-2">Brand</label>
+            <input
+              type="text"
+              name="brand"
+              value={productData.brand}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+            />
+          </div>
+        </div>
+
+        {/* Gender & Material */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block font-semibold mb-2">Gender</label>
+            <select
+              name="gender"
+              value={productData.gender}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+              required
+            >
+              <option value="Men">Men</option>
+              <option value="Women">Women</option>
+              <option value="Unisex">Unisex</option>
+            </select>
+          </div>
+          <div>
+            <label className="block font-semibold mb-2">Material</label>
+            <input
+              type="text"
+              name="material"
+              value={productData.material}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+            />
+          </div>
         </div>
 
         {/* Sizes (Comma Separated) */}
@@ -113,10 +261,11 @@ const EditProductPage = () => {
             onChange={(e) =>
               setProductData({
                 ...productData,
-                sizes: e.target.value.split(",").map((s) => s.trim()),
+                sizes: e.target.value.split(",").map((s) => s.trim()).filter(Boolean),
               })
             }
             className="w-full border border-gray-300 rounded-md p-2"
+            placeholder="e.g. S, M, L, XL"
           />
         </div>
 
@@ -130,25 +279,57 @@ const EditProductPage = () => {
             onChange={(e) =>
               setProductData({
                 ...productData,
-                colors: e.target.value.split(",").map((c) => c.trim()),
+                colors: e.target.value.split(",").map((c) => c.trim()).filter(Boolean),
               })
             }
             className="w-full border border-gray-300 rounded-md p-2"
+            placeholder="e.g. Red, Blue, Black"
+          />
+        </div>
+
+        {/* Collections (Comma Separated) */}
+        <div className="mb-6">
+          <label className="block font-semibold mb-2">Collections (comma-separated)</label>
+          <input
+            type="text"
+            name="collections"
+            value={productData.collections.join(", ")}
+            onChange={(e) =>
+              setProductData({
+                ...productData,
+                collections: e.target.value.split(",").map((c) => c.trim()).filter(Boolean),
+              })
+            }
+            className="w-full border border-gray-300 rounded-md p-2"
+            placeholder="e.g. Spring, Summer, Winter"
           />
         </div>
 
         {/* Image Upload & Preview */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">Upload Image</label>
-          <input type="file" onChange={handleImageUpload} />
-          <div className="flex gap-4 mt-4">
-            {productData.images.map((image, index) => (
-              <div key={index}>
+          <input type="file" onChange={handleImageUpload} disabled={uploading} />
+          {uploading && <p className="text-sm text-gray-500 mt-1">Uploading image...</p>}
+          <div className="flex gap-4 mt-4 overflow-x-auto py-2">
+            {productData.images && productData.images.map((image, index) => (
+              <div key={index} className="relative group flex-shrink-0">
                 <img
                   src={image.url}
-                  alt="Product Image"
+                  alt={image.altText || "Product Image"}
                   className="w-20 h-20 object-cover rounded-md shadow-md"
                 />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setProductData({
+                      ...productData,
+                      images: productData.images.filter((_, imgIdx) => imgIdx !== index),
+                    })
+                  }
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 shadow"
+                >
+                  &times;
+                </button>
               </div>
             ))}
           </div>
@@ -159,7 +340,7 @@ const EditProductPage = () => {
           type="submit"
           className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition-colors font-bold text-lg"
         >
-          Update Product
+          {isEditMode ? "Update Product" : "Create Product"}
         </button>
       </form>
     </div>

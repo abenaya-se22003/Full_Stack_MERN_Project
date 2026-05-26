@@ -1,25 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllOrders, updateOrderStatus, deleteOrder } from "../../redux/slices/adminOrderSlice";
+import { toast } from "sonner";
 
 const OrderManagement = () => {
-  const [orders, setOrders] = useState([
-    {
-      _id: 12312321,
-      user: {
-        name: "John Doe",
-      },
-      totalPrice: 110,
-      status: "Processing",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const { orders, loading, error } = useSelector((state) => state.adminOrders);
 
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order._id === orderId ? { ...order, status: newStatus } : order
-      )
-    );
-    console.log(`Order ${orderId} updated to ${newStatus}`);
+  useEffect(() => {
+    dispatch(fetchAllOrders());
+  }, [dispatch]);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      await dispatch(updateOrderStatus({ id: orderId, status: newStatus })).unwrap();
+      toast.success("Order status updated successfully.");
+    } catch (err) {
+      toast.error(err.message || "Failed to update order status.");
+    }
   };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (window.confirm("Are you sure you want to delete this order?")) {
+      try {
+        await dispatch(deleteOrder(orderId)).unwrap();
+        toast.success("Order deleted successfully.");
+      } catch (err) {
+        toast.error(err.message || "Failed to delete order.");
+      }
+    }
+  };
+
+  if (loading) return <p className="text-center p-6">Loading orders...</p>;
+  if (error) return <p className="text-center text-red-500 p-6">Error: {error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -37,16 +50,16 @@ const OrderManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.length > 0 ? (
+            {orders && orders.length > 0 ? (
               orders.map((order) => (
                 <tr
                   key={order._id}
-                  className="border-b hover:bg-gray-50 cursor-pointer transition-colors"
+                  className="border-b hover:bg-gray-50 transition-colors"
                 >
-                  <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap">
+                  <td className="py-4 px-4 font-mono text-xs text-gray-900 whitespace-nowrap">
                     #{order._id}
                   </td>
-                  <td className="py-4 px-4">{order.user.name}</td>
+                  <td className="py-4 px-4">{order.user ? order.user.name : "N/A"}</td>
                   <td className="py-4 px-4">${order.totalPrice}</td>
                   <td className="py-4 px-4">
                     <select
@@ -54,19 +67,30 @@ const OrderManagement = () => {
                       onChange={(e) => handleStatusChange(order._id, e.target.value)}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5"
                     >
-                      <option value="Processing">Processing</option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="Delivered">Delivered</option>
-                      <option value="Cancelled">Cancelled</option>
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
                     </select>
                   </td>
                   <td className="py-4 px-4">
-                    <button
-                      onClick={() => handleStatusChange(order._id, "Delivered")}
-                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-                    >
-                      Mark as Delivered
-                    </button>
+                    <div className="flex gap-2">
+                      {order.status !== "delivered" && (
+                        <button
+                          onClick={() => handleStatusChange(order._id, "delivered")}
+                          className="bg-green-500 text-white px-3 py-1 rounded text-xs hover:bg-green-600 transition font-semibold"
+                        >
+                          Deliver
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteOrder(order._id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded text-xs hover:bg-red-600 transition font-semibold"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

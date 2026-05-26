@@ -1,12 +1,15 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaUser, FaBoxOpen, FaClipboardList, FaStore, FaSignOutAlt } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slices/authSlice";
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    // Add your logout logic here (e.g., clearing local storage)
+    dispatch(logout());
     navigate("/");
   };
 

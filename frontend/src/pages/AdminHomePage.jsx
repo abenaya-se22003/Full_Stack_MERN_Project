@@ -1,51 +1,43 @@
-import React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux"; 
 import { Link } from "react-router-dom";
+import { fetchAdminProducts } from "../redux/slices/adminProductSlice";
+import { fetchAllOrders } from "../redux/slices/adminOrderSlice";
 
 const AdminHomePage = () => {
   // Mock data for the table
-  const orders = [
-    {
-      _id: "67540ced3376121b361a0ed0",
-      user: { name: "Admin User" },
-      totalPrice: 199.96,
-      status: "Delivered",
-    },
-    {
-      _id: "67540d3ca67b4a70e434e092",
-      user: { name: "Admin User" },
-      totalPrice: 40,
-      status: "Processing",
-    },
-    {
-      _id: "675bf2c6ca77bd83eefd7a18",
-      user: { name: "Admin User" },
-      totalPrice: 39.99,
-      status: "Processing",
-    },
-    {
-      _id: "675c24b09b88827304bd5cc1",
-      user: { name: "Admin User" },
-      totalPrice: 39.99,
-      status: "Processing",
-    },
-  ];
+  const dispatch = useDispatch();
+  const {products,loading: productsLoading,error: productsError} = useSelector((state) => state.adminProducts);
+  const {orders,totalOrders,totalSales,loading: ordersLoading,error: ordersError} = useSelector((state) => state.adminOrders);
+
+  useEffect(() => {
+    dispatch(fetchAdminProducts());
+    dispatch(fetchAllOrders());
+  }, [dispatch]);
 
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+      {productsLoading || ordersLoading ? (
+        <p>Loading...</p>
+      ) : productsError ? (
+        <p className="text-red-500">Error loading products.</p>
+      ) : ordersError ? (
+        <p className="text-red-500">Error loading orders.</p>
+      ) : null}
 
       {/* --- Dashboard Summary Cards --- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {/* Revenue Card */}
         <div className="p-4 shadow-md rounded-lg border bg-white">
           <h2 className="text-xl font-semibold">Revenue</h2>
-          <p className="text-2xl font-bold">$319.94</p>
+          <p className="text-2xl font-bold">${totalSales.toFixed(2)}</p>
         </div>
 
         {/* Total Orders Card */}
         <div className="p-4 shadow-md rounded-lg border bg-white">
           <h2 className="text-xl font-semibold">Total Orders</h2>
-          <p className="text-2xl font-bold">4</p>
+          <p className="text-2xl font-bold">{totalOrders}</p>
           <Link
             to="/admin/orders"
             className="text-blue-500 hover:underline text-sm"
@@ -57,7 +49,7 @@ const AdminHomePage = () => {
         {/* Total Products Card */}
         <div className="p-4 shadow-md rounded-lg border bg-white">
           <h2 className="text-xl font-semibold">Total Products</h2>
-          <p className="text-2xl font-bold">40</p>
+          <p className="text-2xl font-bold">{products.length}</p>
           <Link
             to="/admin/products"
             className="text-blue-500 hover:underline text-sm"

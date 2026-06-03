@@ -6,7 +6,7 @@ import { RiTwitterXLine } from "react-icons/ri";
 const Topbar = () => {
   return (
     <div className="bg-[#a64227] text-white">
-      <div className="container mx-auto flex justify-between items-center py-3 px-4">
+      <div className="container mx-auto grid grid-cols-3 items-center py-4 px-4">
         
         {/* Social Media Icons - Hidden on small screens, flex on medium+ */}
         <div className="hidden md:flex items-center space-x-4">
@@ -22,12 +22,12 @@ const Topbar = () => {
         </div>
 
         {/* Center Text Message */}
-        <div className="text-sm text-center flex-grow">
+        <div className="text-sm text-center col-span-3 md:col-span-1">
           <span>We ship worldwide — Fast and reliable shipping!</span>
         </div>
 
         {/* Phone Number - Hidden on small screens, block on medium+ */}
-        <div className="text-sm hidden md:block">
+        <div className="text-sm hidden md:block text-right">
           <a href="tel:+1234567890" className="hover:text-gray-300">
             +1 (234) 567-890
           </a>

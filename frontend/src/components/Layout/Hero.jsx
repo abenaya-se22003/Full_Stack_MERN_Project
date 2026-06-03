@@ -1,15 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import heroImg from "../../assets/Hero.jpg";
+import heroVideo from "../../assets/Cinematic_commercial_lookbook.mp4";
 
 const Hero = () => {
   return (
-    <section className="relative">
-      {/* Hero Image */}
-      <img
-        src={heroImg}
-        alt="Hero"
-        className="w-full h-[400px] md:h-[600px] lg:h-[750px] object-cover"
+    <section className="relative -mt-[72px]">
+      {/* Hero Video */}
+      <video
+        src={heroVideo}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="w-full h-[60vh] md:h-[80vh] lg:h-[calc(100vh-48px)] object-cover"
       />
 
       {/* --- CHANGED THIS SECTION --- */}

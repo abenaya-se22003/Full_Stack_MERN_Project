@@ -4,15 +4,12 @@ import Navbar from './Navbar'
 
 function Header() {
   return (
-    <div>
-
+    <>
        {/* Topbar */}
         <Topbar />
          {/* Navbar */}
          <Navbar />
-         {/* Cart Drawer */}
-
-    </div>
+    </>
   )
 }
 

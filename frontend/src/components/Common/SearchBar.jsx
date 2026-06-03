@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setFilters, fetchProductsByFilters } from '../../redux/slices/productSlice';
 
-const Search = () => {
+const Search = ({ isTransparent }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const dispatch = useDispatch();
@@ -62,7 +62,7 @@ const Search = () => {
         </div>
       ) : (
         /* Normal Search Icon */
-        <button onClick={handleSearchToggle} className="text-gray-700 hover:text-black">
+        <button onClick={handleSearchToggle} className={isTransparent ? "text-white hover:text-gray-300" : "text-gray-700 hover:text-black"}>
           <HiMagnifyingGlass className="h-6 w-6" />
         </button>
       )}

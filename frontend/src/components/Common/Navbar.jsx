@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { HiOutlineUser, HiOutlineShoppingBag, HiBars3BottomRight } from 'react-icons/hi2';
 import { IoMdClose } from "react-icons/io"; // Import Close Icon
 import SearchBar from './SearchBar';
@@ -10,6 +10,8 @@ function Navbar() {
   // States for both drawers
   const [drawerOpen, setDrawerOpen] = useState(false); // Cart
   const [navDrawerOpen, setNavDrawerOpen] = useState(false); // Mobile Menu
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
   const toggleDrawer = () => setDrawerOpen(!drawerOpen);
   const toggleNavDrawer = () => setNavDrawerOpen(!navDrawerOpen);
@@ -18,9 +20,28 @@ function Navbar() {
   const { user } = useSelector((state) => state.auth);
   const cartItemCount = cart?.products?.reduce((total, item) => total + item.quantity, 0) || 0;
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const isTransparent = location.pathname === "/" && !isScrolled;
+  const linkColorClass = isTransparent
+    ? "text-white/80 hover:text-white"
+    : "text-gray-700 hover:text-black";
+
   return (
     <>
-    <header className="border-b border-gray-200">
+    <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${isTransparent ? "bg-transparent border-b-0 text-white" : "bg-white border-b border-gray-200 text-gray-700 shadow-sm"}`}>
       <nav className="container mx-auto flex items-center justify-between py-4 px-4">
         {/* Left-Logo */}
         <div>
@@ -29,10 +50,10 @@ function Navbar() {
 
         {/* Center-NavbarLinks (Desktop) */}
         <div className="hidden md:flex space-x-6">
-          <Link to="/collection/all?gender=Men" className="text-gray-700 hover:text-black text-sm font-medium uppercase">Men</Link>
-          <Link to="/collection/all?gender=Women" className="text-gray-700 hover:text-black text-sm font-medium uppercase">Women</Link>
-          <Link to="/collection/all?category=Top Wear" className="text-gray-700 hover:text-black text-sm font-medium uppercase">Top Wear</Link>
-          <Link to="/collection/all?category=Bottom Wear" className="text-gray-700 hover:text-black text-sm font-medium uppercase">Bottom Wear</Link>
+          <Link to="/collection/all?gender=Men" className={`${linkColorClass} text-sm font-medium uppercase`}>Men</Link>
+          <Link to="/collection/all?gender=Women" className={`${linkColorClass} text-sm font-medium uppercase`}>Women</Link>
+          <Link to="/collection/all?category=Top Wear" className={`${linkColorClass} text-sm font-medium uppercase`}>Top Wear</Link>
+          <Link to="/collection/all?category=Bottom Wear" className={`${linkColorClass} text-sm font-medium uppercase`}>Bottom Wear</Link>
         </div>
 
         {/* Right-icons */}
@@ -40,22 +61,22 @@ function Navbar() {
           {user && user.role === 'admin' && (
             <Link to="/admin" className="block bg-black px-2 rounded text-sm text-white">Admin</Link>
           )}
-          <Link to="/profile" className="hover:text-black">
-            <HiOutlineUser className="h-6 w-6 text-gray-700" />
+          <Link to="/profile" className={isTransparent ? "text-white hover:text-gray-300" : "text-gray-700 hover:text-black"}>
+            <HiOutlineUser className="h-6 w-6" />
           </Link>
 
-          <button onClick={toggleDrawer} className="relative hover:text-black">
-            <HiOutlineShoppingBag className="h-6 w-6 text-gray-700" />
+          <button onClick={toggleDrawer} className={`relative ${isTransparent ? "text-white hover:text-gray-300" : "text-gray-700 hover:text-black"}`}>
+            <HiOutlineShoppingBag className="h-6 w-6" />
             <span className="absolute -top-1 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">{cartItemCount}</span>
           </button>
 
           <div className='overflow-hidden'>
-            <SearchBar />
+            <SearchBar isTransparent={isTransparent} />
           </div>
 
           {/* Mobile Menu Toggle Button */}
-          <button onClick={toggleNavDrawer} className="md:hidden">
-            <HiBars3BottomRight className="h-6 w-6 text-gray-700" />
+          <button onClick={toggleNavDrawer} className={`md:hidden ${isTransparent ? "text-white hover:text-gray-300" : "text-gray-700 hover:text-black"}`}>
+            <HiBars3BottomRight className="h-6 w-6" />
           </button>
         </div>
       </nav>

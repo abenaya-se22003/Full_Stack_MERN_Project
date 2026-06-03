@@ -20,7 +20,7 @@ function FeaturedCollection() {
             fashion and function. Designed to make you look and feel great every day.
           </p>
           <Link 
-            to="/collections/all" 
+            to="/collection/all" 
             className="bg-black text-white px-8 py-3 rounded-lg text-lg hover:bg-gray-800 transition-colors inline-block"
           >
             Shop Now

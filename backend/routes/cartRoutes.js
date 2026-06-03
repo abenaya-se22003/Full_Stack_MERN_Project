@@ -98,11 +98,38 @@ router.put("/", async (req, res) => {
   const { productId, quantity, size, color, guestId, userId } = req.body;
 
   try {
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
     let cart = await getCart(userId, guestId);
-    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    if (!cart) {
+      const cleanUserId = (userId && userId !== "null" && userId !== "undefined") ? userId : null;
+      const cleanGuestId = (guestId && guestId !== "null" && guestId !== "undefined") ? guestId : null;
+
+      const newCart = await Cart.create({
+        user: cleanUserId ? cleanUserId : undefined,
+        guestId: cleanGuestId ? cleanGuestId : "guest_" + new Date().getTime(),
+        products: [{
+          productId,
+          name: product.name,
+          image: product.images[0].url,
+          price: product.price,
+          size,
+          color,
+          quantity: quantity > 0 ? quantity : 1,
+        }],
+        totalPrice: product.price * (quantity > 0 ? quantity : 1),
+      });
+
+      return res.status(201).json(newCart);
+    }
 
     const productIndex = cart.products.findIndex(
       (p) =>
+        p.productId &&
         p.productId.toString() === productId &&
         p.size === size &&
         p.color === color
@@ -114,17 +141,27 @@ router.put("/", async (req, res) => {
       } else {
         cart.products.splice(productIndex, 1);
       }
-
-      cart.totalPrice = cart.products.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-      );
-
-      await cart.save();
-      return res.status(200).json(cart);
     } else {
-      return res.status(404).json({ message: "Product not found in cart" });
+      if (quantity > 0) {
+        cart.products.push({
+          productId,
+          name: product.name,
+          image: product.images[0].url,
+          price: product.price,
+          size,
+          color,
+          quantity,
+        });
+      }
     }
+
+    cart.totalPrice = cart.products.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+
+    await cart.save();
+    return res.status(200).json(cart);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server Error" });
@@ -136,10 +173,15 @@ router.delete("/", async (req, res) => {
     const {productId, size, color, guestId, userId} = req.body;
     try {
         let cart = await getCart(userId, guestId);
-        if (!cart) return res.status(404).json({message: "Cart not found"});
+        if (!cart) {
+            // If the cart doesn't exist in the database (e.g. database was wiped),
+            // return a successful empty cart so the client can synchronize and clear local storage.
+            return res.status(200).json({ products: [], totalPrice: 0 });
+        }
         
        const productIndex = cart.products.findIndex(  
             (p) =>
+                p.productId &&
                 p.productId.toString() === productId &&
                 p.size === size &&
                 p.color === color
@@ -153,7 +195,8 @@ router.delete("/", async (req, res) => {
             await cart.save();
             return res.status(200).json(cart);
         } else {
-            return res.status(404).json({ message: "Product not found in cart" });
+            // Product is already not in the cart, return success with the current cart
+            return res.status(200).json(cart);
         }
     } catch (error) {
         console.error(error);

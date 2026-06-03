@@ -1,6 +1,7 @@
-const exoress = require('express');
+const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -13,11 +14,14 @@ const adminRoutes = require('./routes/adminRoutes');
 const productAdminRoutes = require('./routes/productAdminRoutes');  
 const adminOrderRoutes = require('./routes/adminOrderRoutes');  
 
-
-const app = exoress();
-app.use(exoress.json());
-app.use(cors());
 dotenv.config();
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+// Serve uploads folder statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 const PORT = process.env.PORT || 3000;

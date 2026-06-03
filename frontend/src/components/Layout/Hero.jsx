@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import heroImg from "../../assets/rabbit-hero.webp";
+import heroImg from "../../assets/Hero.jpg";
 
 const Hero = () => {
   return (
@@ -8,7 +8,7 @@ const Hero = () => {
       {/* Hero Image */}
       <img
         src={heroImg}
-        alt="Rabbit"
+        alt="Hero"
         className="w-full h-[400px] md:h-[600px] lg:h-[750px] object-cover"
       />
 

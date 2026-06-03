@@ -17,7 +17,7 @@ const AdminSidebar = () => {
     { to: "/admin/users", label: "Users", icon: <FaUser /> },
     { to: "/admin/products", label: "Products", icon: <FaBoxOpen /> },
     { to: "/admin/orders", label: "Orders", icon: <FaClipboardList /> },
-    { to: "/admin/shop", label: "Shop", icon: <FaStore /> },
+    { to: "/", label: "Shop", icon: <FaStore /> },
   ];
 
   return (

@@ -41,7 +41,7 @@ function Navbar() {
 
   return (
     <>
-    <header className={`sticky top-0 z-50 w-full transition-all duration-300 ${isTransparent ? "bg-transparent border-b-0 text-white" : "bg-white border-b border-gray-200 text-gray-700 shadow-sm"}`}>
+    <header className={`sticky top-0 z-[100] w-full transition-all duration-300 ${isTransparent ? "bg-transparent border-b-0 text-white" : "bg-white/95 backdrop-blur-md border-b border-gray-100 text-gray-700 shadow-[0_4px_20px_rgba(0,0,0,0.05),_0_1px_2px_rgba(0,0,0,0.02)]"}`}>
       <nav className="container mx-auto flex items-center justify-between py-4 px-4">
         {/* Left-Logo */}
         <div>
@@ -82,7 +82,7 @@ function Navbar() {
       </nav>
 
       {/* --- Mobile Nav Drawer (Left Side) --- */}
-      <div className={`fixed top-0 left-0 w-3/4 sm:w-1/2 h-full bg-white shadow-lg transform transition-transform duration-300 z-50 ${navDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <div className={`fixed top-0 left-0 w-3/4 sm:w-1/2 h-full bg-white shadow-lg transform transition-transform duration-300 z-[110] ${navDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
         
         {/* Close Button Area */}
         <div className="flex justify-end p-4">

@@ -106,11 +106,93 @@ const ProductDetails = ({ productId }) => {
 
               {/* Colors */}
               <div className="mb-6">
-                <p className="font-semibold mb-2">Color:</p>
-                <div className="flex space-x-3">
-                  {selectedProduct.colors.map((color) => (
-                    <button key={color} onClick={() => setSelectedColor(color)} className={`w-8 h-8 rounded-full border-2 ${selectedColor === color ? "border-blue-500" : "border-transparent"}`} style={{ backgroundColor: color.toLowerCase() }}></button>
-                  ))}
+                <p className="font-semibold mb-2">
+                  Color: {selectedColor && <span className="font-normal text-gray-600 ml-1">{selectedColor}</span>}
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {selectedProduct.colors.map((color) => {
+                    const colorMap = {
+                      red: "#e53e3e",
+                      blue: "#3182ce",
+                      yellow: "#d69e2e",
+                      black: "#1a202c",
+                      white: "#f7fafc",
+                      gray: "#718096",
+                      grey: "#718096",
+                      navy: "#1a365d",
+                      "navy blue": "#1a365d",
+                      "dark blue": "#2a4365",
+                      "light blue": "#63b3ed",
+                      burgundy: "#702459",
+                      "tropical print": "#38a169",
+                      "navy palms": "#2c5282",
+                      "dark wash": "#2d3748",
+                      "heather gray": "#a0aec0",
+                      olive: "#6b7b2e",
+                      charcoal: "#4a5568",
+                      "dark green": "#276749",
+                      pink: "#ed64a6",
+                      beige: "#e8d5b7",
+                      khaki: "#c3a35d",
+                      brown: "#92400e",
+                      "light wash": "#bee3f8",
+                      orange: "#ed8936",
+                      purple: "#805ad5",
+                      green: "#38a169",
+                      lavender: "#b794f4",
+                      "light blue": "#63b3ed",
+                    };
+                    const hex = colorMap[color.toLowerCase()] || "#a0aec0";
+                    const isSelected = selectedColor === color;
+                    const isWhiteish = ["white", "beige", "light wash"].includes(color.toLowerCase()) || hex === "#f7fafc" || hex === "#e8d5b7" || hex === "#bee3f8";
+                    return (
+                      <button
+                        key={color}
+                        title={color}
+                        onClick={() => setSelectedColor(color)}
+                        className="relative flex items-center justify-center"
+                        style={{ width: 36, height: 36 }}
+                      >
+                        {/* Outer ring when selected */}
+                        <span
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            borderRadius: "50%",
+                            border: isSelected ? "2px solid #3182ce" : "2px solid transparent",
+                            transition: "border-color 0.15s",
+                          }}
+                        />
+                        {/* Color swatch */}
+                        <span
+                          style={{
+                            display: "block",
+                            width: 26,
+                            height: 26,
+                            borderRadius: "50%",
+                            backgroundColor: hex,
+                            border: isWhiteish ? "1px solid #cbd5e0" : "1px solid rgba(0,0,0,0.1)",
+                            boxShadow: isSelected ? "0 0 0 1px #fff inset" : "none",
+                          }}
+                        />
+                        {/* Checkmark when selected */}
+                        {isSelected && (
+                          <span
+                            style={{
+                              position: "absolute",
+                              color: isWhiteish ? "#2d3748" : "#fff",
+                              fontSize: 13,
+                              fontWeight: "bold",
+                              lineHeight: 1,
+                              textShadow: isWhiteish ? "none" : "0 1px 2px rgba(0,0,0,0.4)",
+                            }}
+                          >
+                            ✓
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

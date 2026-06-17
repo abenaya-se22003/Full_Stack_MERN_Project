@@ -308,8 +308,41 @@ const EditProductPage = () => {
         {/* Image Upload & Preview */}
         <div className="mb-6">
           <label className="block font-semibold mb-2">Upload Image</label>
-          <input type="file" onChange={handleImageUpload} disabled={uploading} />
-          {uploading && <p className="text-sm text-gray-500 mt-1">Uploading image...</p>}
+          <label
+            htmlFor="image-upload"
+            className={`flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
+              uploading
+                ? "border-gray-300 bg-gray-50 cursor-not-allowed"
+                : "border-gray-300 bg-gray-50 hover:bg-gray-100 hover:border-gray-400"
+            }`}
+          >
+            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+              <svg className="w-8 h-8 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <p className="mb-1 text-sm text-gray-500">
+                <span className="font-semibold text-gray-700">Click to upload</span> or drag and drop
+              </p>
+              <p className="text-xs text-gray-400">PNG, JPG, WEBP (max 5MB)</p>
+            </div>
+            <input
+              id="image-upload"
+              type="file"
+              className="hidden"
+              onChange={handleImageUpload}
+              disabled={uploading}
+              accept="image/*"
+            />
+          </label>
+          {uploading && (
+            <div className="flex items-center gap-2 mt-2">
+              <svg className="animate-spin h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              <p className="text-sm text-gray-500">Uploading image...</p>
+            </div>
+          )}
           <div className="flex gap-4 mt-4 overflow-x-auto py-2">
             {productData.images && productData.images.map((image, index) => (
               <div key={index} className="relative group flex-shrink-0">

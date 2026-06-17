@@ -23,8 +23,8 @@ const AdminSidebar = () => {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <NavLink to="/admin" className="text-2xl font-medium text-white">
-          Rabbit
+        <NavLink to="/admin" className="text-2xl font-medium text-white tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
+          Velora
         </NavLink>
       </div>
       <h2 className="text-xl font-medium mb-6 text-center text-gray-300">

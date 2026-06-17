@@ -45,7 +45,7 @@ function Navbar() {
       <nav className="container mx-auto flex items-center justify-between py-4 px-4">
         {/* Left-Logo */}
         <div>
-          <Link to="/" className="text-2xl font-medium">Rabbit</Link>
+          <Link to="/" className="text-2xl font-medium tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>Velora</Link>
         </div>
 
         {/* Center-NavbarLinks (Desktop) */}

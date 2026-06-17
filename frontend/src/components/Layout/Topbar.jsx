@@ -5,7 +5,7 @@ import { RiTwitterXLine } from "react-icons/ri";
 
 const Topbar = () => {
   return (
-    <div className="bg-[#a64227] text-white">
+    <div className="bg-gradient-to-r from-[#8b3520] via-[#a64227] to-[#8b3520] text-white">
       <div className="container mx-auto grid grid-cols-3 items-center py-4 px-4">
         
         {/* Social Media Icons - Hidden on small screens, flex on medium+ */}

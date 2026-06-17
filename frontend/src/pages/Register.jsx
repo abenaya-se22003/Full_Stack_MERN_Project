@@ -50,7 +50,7 @@ const Register = () => {
         >
           {/* Logo */}
           <div className="flex justify-center mb-6">
-            <h2 className="text-xl font-medium">Rabbit</h2>
+            <h2 className="text-xl font-medium tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>Velora</h2>
           </div>
 
           {/* Header */}

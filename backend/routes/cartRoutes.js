@@ -229,7 +229,7 @@ router.post("/merge", protect, async (req, res) => {
         const userCart = await Cart.findOne({ user: req.user._id });
 
         if (!guestCart) {
-            return res.status(404).json({ message: "Guest cart not found" });
+            return res.status(200).json(userCart || { products: [], totalPrice: 0 });
         }
 
         if (guestCart.products.length === 0) {

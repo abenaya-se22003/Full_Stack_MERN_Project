@@ -7,7 +7,7 @@ import axios from "axios";
 
 // Action Imports
 import { createCheckout } from "../../redux/slices/checkoutSlice";
-import { clearCart } from "../../redux/slices/cartSlice";
+import { clearCart, clearCartError } from "../../redux/slices/cartSlice";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -31,6 +31,11 @@ const Checkout = () => {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+
+  // Clear stale cart errors on mount
+  useEffect(() => {
+    dispatch(clearCartError());
+  }, [dispatch]);
 
   // Redirect if cart is empty
   useEffect(() => {

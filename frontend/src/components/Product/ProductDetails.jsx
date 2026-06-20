@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
 import { fetchProductDetails, fetchSimilarProducts } from "../../redux/slices/productSlice";
@@ -10,6 +10,7 @@ import { addToCart } from "../../redux/slices/cartSlice";
 
 const ProductDetails = ({ productId }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { selectedProduct, loading, error, similarProducts } = useSelector((state) => state.products);
   const { user, guestId } = useSelector((state) => state.auth);
@@ -41,20 +42,38 @@ const ProductDetails = ({ productId }) => {
     }
     setIsButtonDisabled(true);
 
-    dispatch(addToCart({
-      productId: productFetchId,
-      size: selectedSize,
-      color: selectedColor,
-      quantity,
-      userId: user?.id || user?._id,
-      guestId,
-    })).then(() => {
-      toast.success("Product added to cart!", { duration: 1000 });
-      setIsButtonDisabled(false);
-    }).catch(() => {
-      toast.error("Failed to add product to cart.", { duration: 1000 });
-      setIsButtonDisabled(false);
-    });
+    if (!user) {
+      dispatch(addToCart({
+        productId: productFetchId,
+        size: selectedSize,
+        color: selectedColor,
+        quantity,
+        userId: null,
+        guestId,
+      })).then(() => {
+        toast.success("Product added to cart! Redirecting to login...", { duration: 1500 });
+        setIsButtonDisabled(false);
+        navigate("/login?redirect=/checkout");
+      }).catch(() => {
+        toast.error("Failed to add product to cart.", { duration: 1000 });
+        setIsButtonDisabled(false);
+      });
+    } else {
+      dispatch(addToCart({
+        productId: productFetchId,
+        size: selectedSize,
+        color: selectedColor,
+        quantity,
+        userId: user?.id || user?._id,
+        guestId,
+      })).then(() => {
+        toast.success("Product added to cart!", { duration: 1000 });
+        setIsButtonDisabled(false);
+      }).catch(() => {
+        toast.error("Failed to add product to cart.", { duration: 1000 });
+        setIsButtonDisabled(false);
+      });
+    }
   };
 
   if (loading) {

@@ -38,7 +38,11 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/collection/:collection" element={<CollectionPage />} />
             <Route path="/product/:id" element={<ProductDetails/>} />
-            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } />
             <Route path="/order-confirmation" element={<OrderConfirmation />} />
             <Route path="/order/:id" element={<OrderDetailsPage />} />
             <Route path="/my-orders" element={<MyOrdersPage />} />

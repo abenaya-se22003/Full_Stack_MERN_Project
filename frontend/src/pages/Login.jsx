@@ -15,22 +15,27 @@ const Login = () => {
   const {user, guestId} = useSelector((state) => state.auth);
   const {cart} = useSelector((state) => state.cart);
 
-  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
-  const isCheckoutRedirect = redirect === "/checkout";
-
+  let redirect = new URLSearchParams(location.search).get("redirect") || "/";
+  if (redirect.startsWith("http://localhost:5173")) {
+    redirect = redirect.replace("http://localhost:5173", "");
+  }
 
   useEffect(() => {
     if (user) {
       if (cart?.products?.length > 0 && guestId) {
         // Merge guest cart with user cart
-        dispatch(mergeCart({ guestId, userId: user.id || user._id })).then(() => {
-          navigate(isCheckoutRedirect ? "/checkout" : "/");
-        });
+        dispatch(mergeCart({ guestId }))
+          .then(() => {
+            navigate(redirect);
+          })
+          .catch(() => {
+            navigate(redirect);
+          });
       } else {
-        navigate(isCheckoutRedirect ? "/checkout" : "/");
+        navigate(redirect);
       }
     }
-  }, [user, guestId, cart, dispatch, isCheckoutRedirect, navigate]);
+  }, [user, guestId, cart, dispatch, redirect, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -85,14 +85,14 @@ export const removeFromCart = createAsyncThunk(
 
 export const mergeCart = createAsyncThunk(
     "cart/mergeCart",
-    async ({ user, guestId }, { rejectWithValue }) => {
+    async ({ guestId }, { rejectWithValue }) => {
         try {
             const response = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/cart/merge`,
-                { user, guestId },
+                { guestId },
                 {
                     headers: {
-                        Authorization: `Bearer ${user.token}`,
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                     },
                 }
             );
@@ -114,6 +114,9 @@ const cartSlice = createSlice({
         clearCart: (state) => {
             state.cart = { products: [] };
             localStorage.removeItem("cart");
+        },
+        clearCartError: (state) => {
+            state.error = null;
         },
     },
    extraReducers: (builder) => {
@@ -195,5 +198,5 @@ const cartSlice = createSlice({
     },
 });
 
-export const { clearCart } = cartSlice.actions;
+export const { clearCart, clearCartError } = cartSlice.actions;
 export default cartSlice.reducer;

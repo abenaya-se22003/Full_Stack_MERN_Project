@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import ProductGrid from "./ProductGrid";
 import { fetchProductDetails, fetchSimilarProducts } from "../../redux/slices/productSlice";
 import { addToCart } from "../../redux/slices/cartSlice";
+import OptimizedImage from "../Common/OptimizedImage";
 
 
 
@@ -92,12 +93,14 @@ const ProductDetails = ({ productId }) => {
             {/* LEFT: THUMBNAILS */}
             <div className="hidden md:flex flex-col space-y-4 mr-6">
               {selectedProduct.images.map((image, index) => (
-                <img
+                <OptimizedImage
                   key={index}
-                  src={image.url || null}
+                  src={image.url}
                   alt={image.altText || "Thumbnail"}
                   className={`w-20 h-20 object-cover rounded-lg cursor-pointer border ${mainImage === image.url ? "border-black" : "border-gray-200"}`}
+                  containerClassName="w-20 h-20 rounded-lg"
                   onClick={() => setMainImage(image.url)}
+                  width={100}
                 />
               ))}
             </div>
@@ -105,11 +108,11 @@ const ProductDetails = ({ productId }) => {
             {/* MIDDLE: MAIN IMAGE */}
             <div className="md:w-1/2 mb-4">
               <div className="mb-4">
-                <img src={mainImage || null} alt="Main Product" className="w-full h-auto object-cover rounded-lg" />
+                <OptimizedImage src={mainImage} alt="Main Product" className="w-full h-auto object-cover rounded-lg" containerClassName="w-full bg-gray-50 rounded-lg" width={800} />
               </div>
               <div className="md:hidden flex space-x-4 mb-4">
                 {selectedProduct.images.map((image, index) => (
-                  <img key={index} src={image.url || null} alt="Mobile Thumbnail" className="w-20 h-20 object-cover rounded-lg border" onClick={() => setMainImage(image.url)} />
+                  <OptimizedImage key={index} src={image.url} alt="Mobile Thumbnail" className="w-20 h-20 object-cover rounded-lg border" containerClassName="w-20 h-20 rounded-lg" onClick={() => setMainImage(image.url)} width={100} />
                 ))}
               </div>
             </div>

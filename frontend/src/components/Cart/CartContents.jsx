@@ -2,6 +2,7 @@ import React from 'react';
 import { RiDeleteBin3Line } from "react-icons/ri";
 import { useDispatch } from 'react-redux';
 import { updateCartItem, removeFromCart } from '../../redux/slices/cartSlice';
+import OptimizedImage from '../Common/OptimizedImage';
 
 const CartContents = ({ cart, userId, guestId }) => {
 
@@ -28,10 +29,12 @@ const CartContents = ({ cart, userId, guestId }) => {
       {cartProducts.map((product, index) => (
         <div key={index} className="flex items-start justify-between py-4 border-b">
           <div className="flex items-start">
-            <img
+            <OptimizedImage
               src={product.image}
               alt={product.name}
               className="w-20 h-24 object-cover mr-4 rounded"
+              containerClassName="w-20 h-24 rounded"
+              width={100}
             />
             <div>
               <h3 className="font-semibold">{product.name}</h3>

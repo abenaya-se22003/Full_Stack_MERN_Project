@@ -40,3 +40,9 @@ img {
 a {
   transition: color 0.2s ease, opacity 0.2s ease;
 }
+
+/* Shimmer animation for image skeleton loaders */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

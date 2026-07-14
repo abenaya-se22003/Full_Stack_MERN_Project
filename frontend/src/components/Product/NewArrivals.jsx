@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import OptimizedImage from "../Common/OptimizedImage";
 
 const NewArrivals = () => {
   const scrollRef = useRef(null);
@@ -107,11 +108,13 @@ const NewArrivals = () => {
         {newArrivals.map((product) => (
           <div key={product._id} className="group min-w-[100%] sm:min-w-[50%] lg:min-w-[30%] relative overflow-hidden rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300">
             <div className="w-full h-[500px] overflow-hidden rounded-lg">
-              <img
-                src={product.images[0].url}
+              <OptimizedImage
+                src={product.images[0]?.url}
                 alt={product.name}
                 className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-                draggable="false"
+                containerClassName="w-full h-full"
+                draggable={false}
+                width={600}
               />
             </div>
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-6 text-white rounded-b-lg transition-all duration-300">

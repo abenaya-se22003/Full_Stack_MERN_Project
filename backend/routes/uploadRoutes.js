@@ -40,13 +40,21 @@ router.post("/upload", upload.single("image"), async (req, res) => {
         // function to upload the file buffer to Cloudinary
         const streamUpload = (fileBuffer) => {
           return new Promise((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream((error, result) => {
-              if (result) {
-                resolve(result);
-              } else {
-                reject(error);
+            const stream = cloudinary.uploader.upload_stream(
+              {
+                folder: "Home",          // Upload to the "Home" folder in Cloudinary
+                quality: "auto",         // Automatic quality optimization
+                fetch_format: "auto",    // Automatic format (WebP/AVIF) based on browser
+                resource_type: "image",
+              },
+              (error, result) => {
+                if (result) {
+                  resolve(result);
+                } else {
+                  reject(error);
+                }
               }
-            });
+            );
             // use streamifier to create a readable stream from the file buffer and pipe it to Cloudinary's upload stream
             streamifier.createReadStream(fileBuffer).pipe(stream);
           });

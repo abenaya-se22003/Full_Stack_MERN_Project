@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import OptimizedImage from '../Common/OptimizedImage';
 
 const ProductGrid = ({ products, loading, error }) => {
   if (loading) {
@@ -16,10 +17,12 @@ const ProductGrid = ({ products, loading, error }) => {
         <Link key={index} to={`/product/${product._id}`} className="group block">
           <div className="bg-white p-4 rounded-xl border border-transparent hover:border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5">
             <div className="w-full h-96 mb-4 overflow-hidden rounded-lg relative">
-              <img 
-                src={product.images[0].url} 
+              <OptimizedImage 
+                src={product.images[0]?.url} 
                 alt={product.name} 
                 className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                containerClassName="w-full h-full"
+                width={400}
               />
               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                 <span className="bg-white/95 backdrop-blur-sm text-gray-900 px-4 py-2 rounded-full text-xs font-semibold tracking-wider uppercase shadow-md transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">

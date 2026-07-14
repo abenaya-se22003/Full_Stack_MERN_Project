@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 // Fixed these names to match your usage below
 import womensCollectionImage from '../../assets/mens-collection.webp'
 import mensCollectionImage from '../../assets/womens-collection.webp'
+import OptimizedImage from '../Common/OptimizedImage'
 
 function GenderCollectionSection() {
   return (
@@ -11,10 +12,11 @@ function GenderCollectionSection() {
         
         {/* Women's Collection */}
         <div className="relative flex-1">
-          <img
-            src={womensCollectionImage} // Now matches import
+          <OptimizedImage
+            src={womensCollectionImage}
             alt="Women's Collection"
             className="w-full h-[700px] object-cover"
+            containerClassName="w-full h-[700px]"
           />
           <div className="absolute bottom-8 left-8 bg-white bg-opacity-90 p-4">
             <h2 className="text-2xl font-bold text-gray-900 mb-3">
@@ -31,10 +33,11 @@ function GenderCollectionSection() {
 
         {/* Men's Collection */}
         <div className="relative flex-1">
-          <img
-            src={mensCollectionImage} // Now matches import
+          <OptimizedImage
+            src={mensCollectionImage}
             alt="Men's Collection"
             className="w-full h-[700px] object-cover"
+            containerClassName="w-full h-[700px]"
           />
           <div className="absolute bottom-8 left-8 bg-white bg-opacity-90 p-4">
             <h2 className="text-2xl font-bold text-gray-900 mb-3">

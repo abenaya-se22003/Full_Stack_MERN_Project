@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import featured from '../../assets/featured.webp'
+import OptimizedImage from '../Common/OptimizedImage'
 
 function FeaturedCollection() {
   return (
@@ -29,10 +30,11 @@ function FeaturedCollection() {
 
         {/* Right Content (Image) */}
         <div className="lg:w-1/2 w-full">
-          <img 
+          <OptimizedImage 
             src={featured} 
             alt="Featured Collection" 
             className="w-full h-full object-cover lg:rounded-tr-3xl lg:rounded-br-3xl" 
+            containerClassName="w-full h-full"
           />
         </div>
 

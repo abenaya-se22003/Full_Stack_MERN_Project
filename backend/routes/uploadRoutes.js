@@ -28,6 +28,7 @@ router.post("/upload", upload.single("image"), async (req, res) => {
     }
 
     let imageUrl = "";
+    let cloudinaryErrorDetails = null;
 
     // Check if Cloudinary is configured and doesn't contain placeholders
     const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME &&
@@ -64,6 +65,7 @@ router.post("/upload", upload.single("image"), async (req, res) => {
         const result = await streamUpload(req.file.buffer);
         imageUrl = result.secure_url;
       } catch (cloudinaryError) {
+        cloudinaryErrorDetails = cloudinaryError.message || cloudinaryError;
         console.error("Cloudinary upload failed, falling back to local storage:", cloudinaryError);
       }
     } else {
@@ -72,26 +74,35 @@ router.post("/upload", upload.single("image"), async (req, res) => {
 
     // If Cloudinary is not configured or failed, fall back to local disk storage
     if (!imageUrl) {
-      const uploadsDir = path.join(__dirname, "../uploads");
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
+      try {
+        const uploadsDir = path.join(__dirname, "../uploads");
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
+        const fileExtension = path.extname(req.file.originalname) || ".jpg";
+        const filename = `${uniqueSuffix}${fileExtension}`;
+        const filePath = path.join(uploadsDir, filename);
+
+        fs.writeFileSync(filePath, req.file.buffer);
+        imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
+        console.log("Image saved locally:", imageUrl);
+      } catch (localWriteError) {
+        console.error("Local storage fallback write failed:", localWriteError);
+        return res.status(500).json({
+          message: "Upload failed: Cloudinary upload is not configured or failed, and local fallback storage is unavailable (Read-only or unsupported filesystem).",
+          cloudinaryError: cloudinaryErrorDetails || "Cloudinary not configured or credentials missing",
+          localStorageError: localWriteError.message
+        });
       }
-
-      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1E9);
-      const fileExtension = path.extname(req.file.originalname) || ".jpg";
-      const filename = `${uniqueSuffix}${fileExtension}`;
-      const filePath = path.join(uploadsDir, filename);
-
-      fs.writeFileSync(filePath, req.file.buffer);
-      imageUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
-      console.log("Image saved locally:", imageUrl);
     }
 
     // Respond with the URL of the uploaded image
     res.json({ imageUrl });
   } catch (error) {
     console.error("Upload Error:", error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 });
 
